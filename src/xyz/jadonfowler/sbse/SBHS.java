@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextPane;
 
 /**
  * @author https://github.com/phase
@@ -42,24 +43,39 @@ public class SBHS {
         gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JTabbedPane tp = new JTabbedPane();
-        addTab(tp, "Sonic", 0x47AFB8);
-        addTab(tp, "Tails", 0x5283F8);
-        addTab(tp, "Knuckles", 0x4CADD8);
-        addTab(tp, "Amy", 0x636458);
-        addTab(tp, "Shadow", 0x58D818);
-        addTab(tp, "Rouge", 0x5F3E38);
-        addTab(tp, "E-102", 0x681A78);
-        addTab(tp, "Chaos", 0x7336B8);
-        addTab(tp, "Emerl", 0x787CFA);
-        addTab(tp, "Fake Emerl", 0x47AB78);
-        addTab(tp, "Eggman", 0x7822D8);
-        frame.getContentPane().add(tp);
+        JTabbedPane mainTabs = new JTabbedPane();
+        {
+            JTabbedPane paletteTabs = new JTabbedPane();
+            addPaletteTab(paletteTabs, "Sonic", 0x47AFB8);
+            addPaletteTab(paletteTabs, "Tails", 0x5283F8);
+            addPaletteTab(paletteTabs, "Knuckles", 0x4CADD8);
+            addPaletteTab(paletteTabs, "Amy", 0x636458);
+            addPaletteTab(paletteTabs, "Shadow", 0x58D818);
+            addPaletteTab(paletteTabs, "Rouge", 0x5F3E38);
+            addPaletteTab(paletteTabs, "E-102", 0x681A78);
+            addPaletteTab(paletteTabs, "Chaos", 0x7336B8);
+            addPaletteTab(paletteTabs, "Emerl", 0x787CFA);
+            addPaletteTab(paletteTabs, "Fake Emerl", 0x47AB78);
+            addPaletteTab(paletteTabs, "Eggman", 0x7822D8);
+            mainTabs.addTab("Palette Editor", null, paletteTabs, "Palette Editor");
+        }
+        {
+            JTextPane t = new JTextPane();
+            t.setText("Not in yet!");
+            mainTabs.addTab("Sprite Editor", null, t, "Sprite Editor");
+        }
+        {
+            JTextPane t = new JTextPane();
+            t.setText("Sonic Battle Hack Suite was made by Phase. "
+                    + "You can find the source at https://github.com/phase/sonicbattle");
+            mainTabs.addTab("About", null, t, "About Page");
+        }
+        frame.getContentPane().add(mainTabs);
         frame.setVisible(true);
         // frame.pack();
     }
 
-    public static void addTab(JTabbedPane pane, String name, int offset) throws Exception {
+    public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {
         pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
     }
 
