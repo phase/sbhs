@@ -1,43 +1,78 @@
 package xyz.jadonfowler.sbse;
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
+import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 /**
  * @author https://github.com/phase
  */
 public class SBHS {
+    public static String gameLocation = "res/sonic.gba";
+    public static RandomAccessFile raf;
     public static final int SpritesStart = 0x47B800 + (64 * (12 / 2));
     public static final int SpritesEnd = 0xA8C600;
     public static JFrame frame;
-    public static final String gameLocation = "res/sonic.gba";
+    public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>() {
+        {
+            String[] g = { "Background (useless)", "Eye color and shoe/glove reflection",
+                    "Above the eye, shoe/glove color", "Outside of shoe/glove", "Outline of shoe/glove",
+                    "In-ball shine", "Primary fur color", "Secondary fur color", "Third fur color/outline",
+                    "Primary skin color", "Secondary skin color", "Third skin color", "Primary shoe color",
+                    "Secondary shoe color", "Third shoe color", "Eye Color" };
+            put("Sonic", g);
+            put("Knuckles", g);
+        }
+    };
 
     public static void main(String[] args) throws Exception {
         frame = new JFrame("Sonic Battle Hack Suite");
         frame.setSize(700, 600);
-        frame.setResizable(false);
-        frame.setVisible(true);
-        final Container contentPane = frame.getContentPane();
+        // frame.setResizable(false);
+        gameLocation = getFile();
+        raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        RandomAccessFile raf = new RandomAccessFile(gameLocation, "rw");
+        JTabbedPane tp = new JTabbedPane();
+        addTab(tp, "Sonic", 0x47AFB8);
+        addTab(tp, "Tails", 0x5283F8);
+        addTab(tp, "Knuckles", 0x4CADD8);
+        addTab(tp, "Amy", 0x636458);
+        addTab(tp, "Shadow", 0x58D818);
+        addTab(tp, "Rouge", 0x5F3E38);
+        addTab(tp, "E-102", 0x681A78);
+        addTab(tp, "Chaos", 0x7336B8);
+        addTab(tp, "Emerl", 0x787CFA);
+        addTab(tp, "Fake Emerl", 0x47AB78);
+        addTab(tp, "Eggman", 0x7822D8);
+        frame.getContentPane().add(tp);
+        frame.setVisible(true);
+        // frame.pack();
+    }
+
+    public static void addTab(JTabbedPane pane, String name, int offset) throws Exception {
+        pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
+    }
+
+    public static JPanel createPalettePanel(String name, int hex) throws Exception {
         String[] colors = new String[16];
         int color = 0;
         String f = "";
-        for (int i = 0x47AFB8; i <= 0x47AFB8 + 32; i++) {
+        for (int i = hex; i <= hex + 32; i++) {
             raf.seek(i);
             int value = raf.read();
             // System.out.print(Integer.toHexString(value));
             if (f.length() == 4) {
+                f = f.split("(?<=\\G.{2})")[1] + f.split("(?<=\\G.{2})")[0];
                 colors[color++] = f;
                 f = (value < 16 ? "0" : "") + Integer.toHexString(value);
             }
@@ -45,37 +80,47 @@ public class SBHS {
                 f += (value < 16 ? "0" : "") + Integer.toHexString(value);
             }
         }
-        System.out.println(Arrays.toString(colors));
+        // System.out.println(Arrays.toString(colors));
         int i = 0;
         JPanel jp = new JPanel();
         jp.setLayout(new BoxLayout(jp, BoxLayout.Y_AXIS));
         for (String s : colors) {
             i++;
-            JButton jb = new JButton("Edit color " + i + " of Sonic");
+            JButton jb = new JButton(name
+                    + " color "
+                    + i
+                    + ": "
+                    + (PALETTES.get(name) == null ? "Something?" : PALETTES.get(name).length < i ? "Something?"
+                            : PALETTES.get(name)[i - 1]));
             jb.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     String name = jb.getText();
-                    int i = -1 + (Integer.parseInt(name.split(" ")[2]));
+                    int i = -1 + (Integer.parseInt(name.split(" ")[2].replace(":", "")));
                     colors[i] = GBAColor.toGBA(getColorInput(GBAColor.fromGBA(colors[i])));
                     try {
                         int h1 = Integer.parseInt(colors[i].split("(?<=\\G.{2})")[0], 16);
                         int h2 = Integer.parseInt(colors[i].split("(?<=\\G.{2})")[1], 16);
-                        //colors[i] = Integer.toHexString(h2) + Integer.toHexString(h1) + "";
-                        raf.seek(0x47AFB8 + (i * 2));
+                        // colors[i] = Integer.toHexString(h2) +
+                        // Integer.toHexString(h1) + "";
+                        raf.seek(hex + (i * 2));
                         raf.write(h2);
-                        raf.seek(0x47AFB8 + (i * 2) + 1);
+                        raf.seek(hex + (i * 2) + 1);
                         raf.write(h1);
                     }
                     catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    System.out.println(Arrays.toString(colors));
+                    // System.out.println(Arrays.toString(colors));
                 }
             });
             jp.add(jb);
         }
-        contentPane.add(jp);
-        frame.pack();
+        return jp;
+    }
+
+    public static String getFile() {
+        JFileChooser fc = new JFileChooser();
+        return (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) ? fc.getSelectedFile().toString() : "";
     }
 
     public static Color getColorInput(Color previousColor) {
