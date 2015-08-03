@@ -5,7 +5,7 @@ Character sprites are left uncompressed, which makes it annoying to insert new i
 Talking text, otherwise known as the speach of the story, is left in a "compressed" hex format in the code. Here's a table of it.
 
 Character|Hex Value|Character seen in a hex editor (ASCII Value)
---------
+-|-|-
 !|01|N/A
 "|02|N/A
 #|03|N/A
@@ -65,7 +65,7 @@ Y|39|9
 Z|3A|:
 
 Story|Offsets
------
+-|-
 Sonic's story text|1DB468 - 1E1469
 Tails' story text|1E146A - 1E6FA7
 Rouge's story text|1E6FA8 - 1ED2C3
