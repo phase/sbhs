@@ -4,6 +4,7 @@ Character sprites are left uncompressed, which makes it annoying to insert new i
 ##Talking Text
 Talking text, otherwise known as the speach of the story, is left in a "compressed" hex format in the code. Here's a table of it.
 
+```
 Character|Hex Value|Character seen in a hex editor (ASCII Value)
 -|-|-
 !|01|N/A
@@ -74,6 +75,7 @@ Amy's story text|1F4180 - 1F9CDB
 Cream's story text|1F9CDC - 1FE86F
 Shadow's story text|1FE870 - 206103
 Emerl's story text|206104 - 20B131
+```
 
 ##unLZ-gba offsets:
 ###Overworld
