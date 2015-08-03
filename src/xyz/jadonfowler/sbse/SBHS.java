@@ -1,15 +1,17 @@
 package xyz.jadonfowler.sbse;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * @author https://github.com/phase
@@ -23,15 +25,9 @@ public class SBHS {
     public static void main(String[] args) throws Exception {
         frame = new JFrame("Sonic Battle Hack Suite");
         frame.setSize(700, 600);
+        frame.setResizable(false);
         frame.setVisible(true);
         final Container contentPane = frame.getContentPane();
-        final JButton go = new JButton("Show JColorChooser");
-        go.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                contentPane.setBackground(getColorInput(contentPane.getBackground()));
-            }
-        });
-        contentPane.add(go, BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         RandomAccessFile raf = new RandomAccessFile(gameLocation, "rw");
         String[] colors = new String[16];
@@ -47,15 +43,44 @@ public class SBHS {
             }
             else {
                 f += (value < 16 ? "0" : "") + Integer.toHexString(value);
-                System.out.println(f);
             }
         }
         System.out.println(Arrays.toString(colors));
-        raf.close();
+        int i = 0;
+        JPanel jp = new JPanel();
+        jp.setLayout(new BoxLayout(jp, BoxLayout.Y_AXIS));
+        for (String s : colors) {
+            i++;
+            JButton jb = new JButton("Edit color " + i + " of Sonic");
+            jb.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String name = jb.getText();
+                    int i = -1 + (Integer.parseInt(name.split(" ")[2]));
+                    colors[i] = GBAColor.toGBA(getColorInput(GBAColor.fromGBA(colors[i])));
+                    try {
+                        int h1 = Integer.parseInt(colors[i].split("(?<=\\G.{2})")[0], 16);
+                        int h2 = Integer.parseInt(colors[i].split("(?<=\\G.{2})")[1], 16);
+                        //colors[i] = Integer.toHexString(h2) + Integer.toHexString(h1) + "";
+                        raf.seek(0x47AFB8 + (i * 2));
+                        raf.write(h2);
+                        raf.seek(0x47AFB8 + (i * 2) + 1);
+                        raf.write(h1);
+                    }
+                    catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    System.out.println(Arrays.toString(colors));
+                }
+            });
+            jp.add(jb);
+        }
+        contentPane.add(jp);
+        frame.pack();
     }
 
     public static Color getColorInput(Color previousColor) {
-        return JColorChooser.showDialog(frame, "Pick Color", previousColor);
+        Color c = JColorChooser.showDialog(frame, "Pick Color", previousColor);
+        return c == null ? previousColor : c;
     }
 
     public static void spriteTest() throws Exception {
