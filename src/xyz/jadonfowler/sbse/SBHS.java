@@ -22,6 +22,7 @@ import javax.swing.JTextPane;
  * @author https://github.com/phase
  */
 public class SBHS {
+    public static final String VERSION = "1.0";
     public static String gameLocation = "res/sonic.gba";
     public static RandomAccessFile raf;
     public static final int SpritesStart = 0x47B800 + (64 * (-98 / 2));
@@ -41,7 +42,7 @@ public class SBHS {
     public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>();
 
     public static void main(String[] args) throws Exception {
-        frame = new JFrame("Sonic Battle Hack Suite - By Phase");
+        frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(700, 600);
         // frame.setResizable(false);
         gameLocation = getFile();
@@ -74,8 +75,12 @@ public class SBHS {
                 raf.seek(i);
                 int value = raf.read();
                 String d = reverse(hex(value));
-                System.out.println(Integer.toHexString(value));
-                Color o = GBAColor.fromGBA(PALETTES.get("Sonic")[value]);
+                //System.out.println(Integer.toHexString(value));
+                Color o = Color.black;
+                try {
+                    o = GBAColor.fromGBA(PALETTES.get("Sonic")[value]);
+                }
+                catch (Exception e) {}
                 int col = (o.getRed() << 16) | (o.getGreen() << 8) | o.getBlue();
                 img.setRGB(x, y, col);
                 x++;
@@ -122,7 +127,7 @@ public class SBHS {
         {
             // About Page
             JTextPane t = new JTextPane();
-            t.setText("Sonic Battle Hack Suite was made by Phase. "
+            t.setText("Sonic Battle Hack Suite " + VERSION + " was made by Phase.\n"
                     + "You can find the source at https://github.com/phase/sonicbattle");
             mainTabs.addTab("About", null, t, "About Page");
         }
