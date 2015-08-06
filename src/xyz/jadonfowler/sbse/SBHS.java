@@ -3,14 +3,17 @@ package xyz.jadonfowler.sbse;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
@@ -21,10 +24,10 @@ import javax.swing.JTextPane;
 public class SBHS {
     public static String gameLocation = "res/sonic.gba";
     public static RandomAccessFile raf;
-    public static final int SpritesStart = 0x47B800 + (64 * (12 / 2));
+    public static final int SpritesStart = 0x47B800 + (64 * (-98 / 2));
     public static final int SpritesEnd = 0xA8C600;
     public static JFrame frame;
-    public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>() {
+    public static HashMap<String, String[]> PALETTE_INFO = new HashMap<String, String[]>() {
         {
             String[] g = { "Background (useless)", "Eye color and shoe/glove reflection",
                     "Above the eye, shoe/glove color", "Outside of shoe/glove", "Outline of shoe/glove",
@@ -35,9 +38,10 @@ public class SBHS {
             put("Knuckles", g);
         }
     };
+    public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>();
 
     public static void main(String[] args) throws Exception {
-        frame = new JFrame("Sonic Battle Hack Suite");
+        frame = new JFrame("Sonic Battle Hack Suite - By Phase");
         frame.setSize(700, 600);
         // frame.setResizable(false);
         gameLocation = getFile();
@@ -45,6 +49,7 @@ public class SBHS {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTabbedPane mainTabs = new JTabbedPane();
         {
+            // Palette Editor
             JTabbedPane paletteTabs = new JTabbedPane();
             addPaletteTab(paletteTabs, "Sonic", 0x47AFB8);
             addPaletteTab(paletteTabs, "Tails", 0x5283F8);
@@ -60,11 +65,62 @@ public class SBHS {
             mainTabs.addTab("Palette Editor", null, paletteTabs, "Palette Editor");
         }
         {
-            JTextPane t = new JTextPane();
-            t.setText("Not in yet!");
-            mainTabs.addTab("Sprite Editor", null, t, "Sprite Editor");
+            // Sprite Editor
+            int amount = 75;
+            BufferedImage img = new BufferedImage(8 * 4, 8 * (int)Math.ceil(amount / 4), BufferedImage.TYPE_INT_RGB);
+            int x = 0, y = 0;
+            for (int i = SpritesStart, j = 1, k = 0, size = 4, rows = 8; i < SpritesStart + (size * rows * amount); i++) {
+                // if (j == 1) all += (hex(i) + ": ");
+                raf.seek(i);
+                int value = raf.read();
+                String d = reverse(hex(value));
+                System.out.println(Integer.toHexString(value));
+                Color o = GBAColor.fromGBA(PALETTES.get("Sonic")[value]);
+                int col = (o.getRed() << 16) | (o.getGreen() << 8) | o.getBlue();
+                img.setRGB(x, y, col);
+                x++;
+                if(x >= 8 * 4){
+                    x = 0;
+                    y++;
+                }
+            }
+            /*// System.out.print(Arrays.toString(dump));
+            String d = join(dump).replace(" ", "");
+            int x = 0, y = 0, offset = 0;
+            for (String s : d.split("\n")) {
+                for (char c : s.toCharArray()) {
+                    int h = Integer.parseInt(c + "", 16);
+                    // System.out.println("x " + x + " y " + y + " w " + img.getWidth() + " h " + img.getHeight());
+                    img.setRGB(x, y + offset, col);
+                    x++;
+                    /*if (x % 8 == 0) {
+                        y++;
+                        x = 0;
+                    }* /
+                }
+                y++;
+                x = 0;
+            }*/
+            /*StyledDocument doc = new DefaultStyledDocument();
+            JTextPane t = new JTextPane(doc);
+            t.setText(d);
+            for (int i = 0; i < t.getDocument().getLength(); i++) {
+                SimpleAttributeSet set = new SimpleAttributeSet();
+                char c = t.getText().toCharArray()[i];
+                try {
+                    int j = Integer.parseInt(c + "", 16);
+                    if (j == 0) StyleConstants.setBackground(set, Color.white);
+                    else StyleConstants.setBackground(set, GBAColor.fromGBA(PALETTES.get("Sonic")[j]));
+                    StyleConstants.setFontSize(set, 3);
+                    StyleConstants.setAlignment(set, 2);
+                    doc.setCharacterAttributes(i, 1, set, true);
+                }
+                catch (Exception e) {}
+            }*/
+            mainTabs.addTab("Sprite Editor", null, new JLabel(new ImageIcon(img)), "Sprite Editor");
         }
         {
+            // About Page
             JTextPane t = new JTextPane();
             t.setText("Sonic Battle Hack Suite was made by Phase. "
                     + "You can find the source at https://github.com/phase/sonicbattle");
@@ -96,6 +152,7 @@ public class SBHS {
                 f += (value < 16 ? "0" : "") + Integer.toHexString(value);
             }
         }
+        PALETTES.put(name, colors);
         // System.out.println(Arrays.toString(colors));
         int i = 0;
         JPanel jp = new JPanel();
@@ -106,13 +163,17 @@ public class SBHS {
                     + " color "
                     + i
                     + ": "
-                    + (PALETTES.get(name) == null ? "Something?" : PALETTES.get(name).length < i ? "Something?"
-                            : PALETTES.get(name)[i - 1]));
+                    + (PALETTE_INFO.get(name) == null ? "Something?" : PALETTE_INFO.get(name).length < i ? "Something?"
+                            : PALETTE_INFO.get(name)[i - 1]));
             jb.addActionListener(new ActionListener() {
+                final String character = name;
+
                 public void actionPerformed(ActionEvent e) {
                     String name = jb.getText();
                     int i = -1 + (Integer.parseInt(name.split(" ")[2].replace(":", "")));
                     colors[i] = GBAColor.toGBA(getColorInput(GBAColor.fromGBA(colors[i])));
+                    PALETTES.remove(character);
+                    PALETTES.put(character, colors);
                     try {
                         int h1 = Integer.parseInt(colors[i].split("(?<=\\G.{2})")[0], 16);
                         int h2 = Integer.parseInt(colors[i].split("(?<=\\G.{2})")[1], 16);
@@ -182,5 +243,49 @@ public class SBHS {
         for (char c : s.toCharArray())
             f += c + " ";
         return f;
+    }
+
+    public static String join(String[] a) {
+        /*String f = null;
+        for (int i = 0; i < a.length; i++) {
+            try{
+                String h = a[i], j = a[++i], k = a[++i], l = a[++i];
+                String g = join(join(h, j), join(k, l));
+                f = (f == null ? g : join(f, g)) + "\n";
+                System.out.println(f+"\nn");
+            }catch(Exception e){
+                //less than 4 elemnts left
+            }
+        }*/
+        String l = null, f = null;
+        for (String s : a) {
+            if (l == null) {
+                l = s;
+                continue;
+            }
+            if (f == null) {
+                f = join(l, s);
+                l = null;
+                continue;
+            }
+            String k = join(l, s);
+            l = null;
+            f = join(f, k);
+        }
+        return f;
+    }
+
+    public static String join(String a, String b) {
+        String f = "";
+        String[] aa = a.split("\n");
+        String[] ba = b.split("\n");
+        for (int i = 0; i < aa.length; i++)
+            f += aa[i] + ba[i] + "\n";
+        return f;
+    }
+
+    public static char getChar(String d, int x, int y) {
+        String e = d.split("\n")[y];
+        return e.toCharArray()[x];
     }
 }
