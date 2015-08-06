@@ -37,6 +37,12 @@ public class SBHS {
                     "Secondary shoe color", "Third shoe color", "Eye Color" };
             put("Sonic", g);
             put("Knuckles", g);
+            put("Tails",
+                    new String[] { "Background (useless)", "Eye color and shoe/glove reflection",
+                            "Above the eye, tail/hand color", "Primary outline", "Secondary outline", "In-ball shine",
+                            "Primary fur color", "Secondary fur color", "Third fur color/outline", "Primary skin color",
+                            "Secondary skin color", "Third skin color", "Primary shoe color & Weapons",
+                            "Secondary shoe color & Weapons", "Third shoe color & Weapons", "Eye Color" });
         }
     };
     public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>();
