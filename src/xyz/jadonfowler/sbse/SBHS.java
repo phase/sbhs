@@ -1,28 +1,17 @@
 package xyz.jadonfowler.sbse;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.HashMap;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextPane;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.*;
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
 
 /**
  * @author https://github.com/phase
  */
 public class SBHS {
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.1";
     public static String gameLocation = "res/sonic.gba";
     public static RandomAccessFile raf;
     public static final int SpritesStart = 0x47B800 + (64 * (-98 / 2));
@@ -131,6 +120,30 @@ public class SBHS {
             mainTabs.addTab("Sprite Editor", null, new JLabel(new ImageIcon(img)), "Sprite Editor");
         }
         {
+            // Text editor
+            JPanel p = new JPanel();
+            JTextArea t = new JTextArea();
+            JScrollPane scroll = new JScrollPane(t);
+            scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            t.setEditable(true);
+            // 1DB3FC
+            int[] dump = new int[24683];
+            int $dump = 0;
+            for (int i = 0x1DB3FC; i < 0x1E1467; i++) {
+                raf.seek(i);
+                int value = raf.read();
+                dump[$dump] = value;
+                $dump++;
+            }
+            System.out.println(SBString.from(SBString.to("Chaos Emeralds")));
+            String s = SBString.from(dump);
+            System.out.println(s);
+            t.setText(s);
+            p.add(scroll);
+            mainTabs.addTab("Text Editor", null, p, "Text Editor");
+        }
+        {
             // About Page
             JTextPane t = new JTextPane();
             t.setText("Sonic Battle Hack Suite " + VERSION + " was made by Phase.\n"
@@ -204,6 +217,27 @@ public class SBHS {
             jp.add(jb);
         }
         return jp;
+    }
+
+    public static int findFreeSpace(int amount) {
+        int currentOffset = -1, a = 0;
+        try {
+            // 00 00 00 01 10 -(read())-> 0 0 0 1 16
+            for (int i = 0xF9EE30; i < 0xFFFF0; i++) {
+                raf.seek(i);
+                int value = raf.read();
+                if (value != 0) {
+                    currentOffset = -1;
+                    a = 0;
+                    continue;
+                }
+                if (a == amount) return currentOffset;
+                if (currentOffset == -1 && value == 0) currentOffset = i;
+                else a++;
+            }
+        }
+        catch (Exception e) {}
+        return -1;
     }
 
     public static String getFile() {
@@ -298,5 +332,14 @@ public class SBHS {
     public static char getChar(String d, int x, int y) {
         String e = d.split("\n")[y];
         return e.toCharArray()[x];
+    }
+
+    public static String atosHex(int[] i) {
+        String f = "[";
+        for (int j : i) {
+            f += Integer.toHexString(j) + ", ";
+        }
+        f += "]";
+        return f;
     }
 }
