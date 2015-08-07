@@ -61,6 +61,19 @@ public class SBHS {
             mainTabs.addTab("Palette Editor", null, paletteTabs, "Palette Editor");
         }
         {
+            // Text editor
+            JTabbedPane textTabs = new JTabbedPane();
+            addTextTab(textTabs, "Sonic", 0x1DB3FC, 0x1E1467);
+            addTextTab(textTabs, "Tails", 0x1E146A, 0x1E6FA7);
+            addTextTab(textTabs, "Rouge", 0x1E6FA8, 0x1ED2C3);
+            addTextTab(textTabs, "Knuckles", 0x1ED2C4, 0x1F417F);
+            addTextTab(textTabs, "Amy", 0x1F4180, 0x1F9CDB);
+            addTextTab(textTabs, "Cream", 0x1F9CDC, 0x1FE86F);
+            addTextTab(textTabs, "Shadow", 0x1FE870, 0x206103);
+            addTextTab(textTabs, "Emerl", 0x206104, 0x20B131);
+            mainTabs.addTab("Text Editor", null, textTabs, "Text Editor");
+        }
+        {
             // Sprite Editor
             int amount = 75;
             BufferedImage img = new BufferedImage(8 * 4, 8 * (int)Math.ceil(amount / 4), BufferedImage.TYPE_INT_RGB);
@@ -120,30 +133,6 @@ public class SBHS {
             mainTabs.addTab("Sprite Editor", null, new JLabel(new ImageIcon(img)), "Sprite Editor");
         }
         {
-            // Text editor
-            JPanel p = new JPanel();
-            JTextArea t = new JTextArea();
-            JScrollPane scroll = new JScrollPane(t);
-            scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-            t.setEditable(true);
-            // 1DB3FC
-            int[] dump = new int[24683];
-            int $dump = 0;
-            for (int i = 0x1DB3FC; i < 0x1E1467; i++) {
-                raf.seek(i);
-                int value = raf.read();
-                dump[$dump] = value;
-                $dump++;
-            }
-            System.out.println(SBString.from(SBString.to("Chaos Emeralds")));
-            String s = SBString.from(dump);
-            System.out.println(s);
-            t.setText(s);
-            p.add(scroll);
-            mainTabs.addTab("Text Editor", null, p, "Text Editor");
-        }
-        {
             // About Page
             JTextPane t = new JTextPane();
             t.setText("Sonic Battle Hack Suite " + VERSION + " was made by Phase.\n"
@@ -155,6 +144,32 @@ public class SBHS {
         // frame.pack();
     }
 
+    
+    public static void addTextTab(JTabbedPane pane, String name, int to, int from) throws Exception {
+        pane.addTab(name, null, createTextPanel(name, to, from), "Edit " + name + " Story Text");
+    }
+    
+    public static JPanel createTextPanel(String name, int to, int from) throws Exception {
+        //System.out.println(name);
+        JPanel p = new JPanel();
+        JTextArea t = new JTextArea();
+        JScrollPane scroll = new JScrollPane(t, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        t.setEditable(true);
+        int last = 0;
+        String s = "";
+        for (int i = to; i < from; i++) {
+            raf.seek(i);
+            int value = raf.read();
+            s += SBString.convert(last, value);
+            if (value == 0 && last == 0) last = -1;
+            else last = value;
+        }
+        t.setText(s);
+        p.add(scroll);
+        return p;
+    }
+    
     public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {
         pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
     }

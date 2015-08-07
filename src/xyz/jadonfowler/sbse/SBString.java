@@ -18,6 +18,7 @@ public class SBString {
             put('+', 0x0B);
             put(',', 0x0C);
             put('-', 0x0D);
+            put('.', 0x0E);
             put('/', 0x0F);
             put('0', 0x10);
             put('1', 0x11);
@@ -129,24 +130,21 @@ public class SBString {
         String s = "";
         int last = -1;
         for (int i : t) {
-            if(i == 0 && last == 0){
+            if (i == 0 && last == 0) {
                 s += " ";
                 last = -1;
                 continue;
             }
-            else if (i == 0){
+            else if (i == 0) {
                 last = 0;
                 continue;
             }
             else if (i == 0xFF) {
-                // System.out.println("FF : 0x" + Integer.toHexString(last));
                 switch (last) {
                 case 0xFE:
-                    System.out.println("FE : \\n\\n");
                     s += "\n\n";
                     break;
                 case 0xFD:
-                    System.out.println("FD : \\n");
                     s += "\n";
                     break;
                 default:
@@ -166,5 +164,25 @@ public class SBString {
             last = i;
         }
         return s;
+    }
+
+    public static String convert(int last, int i) {
+        if (i == 0 && last == 0) {
+            return " ";
+        }
+        else if (i == 0xFF) {
+            switch (last) {
+            case 0xFE:
+                return "\n\n";
+            case 0xFD:
+                return "\n";
+            default:
+                break;
+            }
+        }
+        else {
+            if (REVERSE_TABLE.containsKey(i)) return REVERSE_TABLE.get(i) + "";
+        }
+        return "";
     }
 }
