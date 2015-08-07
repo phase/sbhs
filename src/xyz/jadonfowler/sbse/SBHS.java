@@ -39,7 +39,7 @@ public class SBHS {
     public static void main(String[] args) throws Exception {
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(700, 600);
-        // frame.setResizable(false);
+        frame.setResizable(true);
         gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -136,7 +136,7 @@ public class SBHS {
             // About Page
             JTextPane t = new JTextPane();
             t.setText("Sonic Battle Hack Suite " + VERSION + " was made by Phase.\n"
-                    + "You can find the source at https://github.com/phase/sonicbattle");
+                    + "You can find the source at https://github.com/phase/sbhs");
             mainTabs.addTab("About", null, t, "About Page");
         }
         frame.getContentPane().add(mainTabs);
@@ -147,6 +147,10 @@ public class SBHS {
     
     public static void addTextTab(JTabbedPane pane, String name, int to, int from) throws Exception {
         pane.addTab(name, null, createTextPanel(name, to, from), "Edit " + name + " Story Text");
+    }
+
+    public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {
+        pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
     }
     
     public static JPanel createTextPanel(String name, int to, int from) throws Exception {
@@ -161,17 +165,23 @@ public class SBHS {
         for (int i = to; i < from; i++) {
             raf.seek(i);
             int value = raf.read();
-            s += SBString.convert(last, value);
-            if (value == 0 && last == 0) last = -1;
-            else last = value;
+            
+            if(value == 0 && last == 0){
+                s += " ";
+                last = -1;
+                continue;
+            }
+            else if (value == 0){
+                last = value;
+            }
+            else{
+                s += SBString.convert(last, value);
+                last = value;
+            }
         }
         t.setText(s);
         p.add(scroll);
         return p;
-    }
-    
-    public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {
-        pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
     }
 
     public static JPanel createPalettePanel(String name, int hex) throws Exception {
