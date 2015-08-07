@@ -37,6 +37,7 @@ public class SBHS {
     public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>();
 
     public static void main(String[] args) throws Exception {
+        //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(700, 600);
         frame.setResizable(true);
@@ -156,10 +157,10 @@ public class SBHS {
     public static JPanel createTextPanel(String name, int to, int from) throws Exception {
         //System.out.println(name);
         JPanel p = new JPanel();
-        JTextArea t = new JTextArea();
-        JScrollPane scroll = new JScrollPane(t, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        t.setEditable(true);
+        JTextArea textArea = new JTextArea(100, 50);
+        /*JScrollPane scroll = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);*/
+        textArea.setEditable(true);
         int last = 0;
         String s = "";
         for (int i = to; i < from; i++) {
@@ -179,9 +180,36 @@ public class SBHS {
                 last = value;
             }
         }
-        t.setText(s);
-        p.add(scroll);
-        return p;
+        s = s.replace("]", "").replace("[", "");
+        s = SBString.from(SBString.to(s));
+        textArea.setText(s);
+        // System.out.println(hex(Math.abs(from - to - SBString.to(s).length)));
+        JButton write = new JButton("Write to ROM");
+        write.addActionListener(new ActionListener() {
+            final int t = to;
+            final int f = from;
+            @Override public void actionPerformed(ActionEvent e) {
+                try{
+                    int j = 0;
+                    int[] text = SBString.to(textArea.getText());
+                    for(int i = t; i < f; i++){
+                        raf.seek(i);
+                        raf.write(text[j]);
+                        j++;
+                    }
+                }catch(Exception E){
+                    E.printStackTrace();
+                }
+            }
+        });
+        //p.add(write);
+        p.add(textArea);
+        JPanel p1 = new JPanel();
+        p1.add(write);
+        JPanel globalPanel = new JPanel();
+        globalPanel.add(p1);
+        globalPanel.add(p);
+        return globalPanel;
     }
 
     public static JPanel createPalettePanel(String name, int hex) throws Exception {
