@@ -76,62 +76,11 @@ public class SBHS {
         }
         {
             // Sprite Editor
-            int amount = 75;
-            BufferedImage img = new BufferedImage(8 * 4, 8 * (int)Math.ceil(amount / 4), BufferedImage.TYPE_INT_RGB);
-            int x = 0, y = 0;
-            for (int i = SpritesStart, j = 1, k = 0, size = 4, rows = 8; i < SpritesStart + (size * rows * amount); i++) {
-                // if (j == 1) all += (hex(i) + ": ");
-                raf.seek(i);
-                int value = raf.read();
-                String d = reverse(hex(value));
-                //System.out.println(Integer.toHexString(value));
-                Color o = Color.black;
-                try {
-                    o = GBAColor.fromGBA(PALETTES.get("Sonic")[value]);
-                }
-                catch (Exception e) {}
-                int col = (o.getRed() << 16) | (o.getGreen() << 8) | o.getBlue();
-                img.setRGB(x, y, col);
-                x++;
-                if(x >= 8 * 4){
-                    x = 0;
-                    y++;
-                }
-            }
-            /*// System.out.print(Arrays.toString(dump));
-            String d = join(dump).replace(" ", "");
-            int x = 0, y = 0, offset = 0;
-            for (String s : d.split("\n")) {
-                for (char c : s.toCharArray()) {
-                    int h = Integer.parseInt(c + "", 16);
-                    // System.out.println("x " + x + " y " + y + " w " + img.getWidth() + " h " + img.getHeight());
-                    img.setRGB(x, y + offset, col);
-                    x++;
-                    /*if (x % 8 == 0) {
-                        y++;
-                        x = 0;
-                    }* /
-                }
-                y++;
-                x = 0;
-            }*/
-            /*StyledDocument doc = new DefaultStyledDocument();
-            JTextPane t = new JTextPane(doc);
-            t.setText(d);
-            for (int i = 0; i < t.getDocument().getLength(); i++) {
-                SimpleAttributeSet set = new SimpleAttributeSet();
-                char c = t.getText().toCharArray()[i];
-                try {
-                    int j = Integer.parseInt(c + "", 16);
-                    if (j == 0) StyleConstants.setBackground(set, Color.white);
-                    else StyleConstants.setBackground(set, GBAColor.fromGBA(PALETTES.get("Sonic")[j]));
-                    StyleConstants.setFontSize(set, 3);
-                    StyleConstants.setAlignment(set, 2);
-                    doc.setCharacterAttributes(i, 1, set, true);
-                }
-                catch (Exception e) {}
-            }*/
-            mainTabs.addTab("Sprite Editor", null, new JLabel(new ImageIcon(img)), "Sprite Editor");
+            JTabbedPane spriteTabs = new JTabbedPane();
+            addSpriteTab(spriteTabs, "Shadow Underneath", 0x47B800 + (64 * (-98 / 2)), 31);
+            addSpriteTab(spriteTabs, "Sonic", 0x47B800 + (64 * ((4 * 36) / 2)), 50);
+            
+            mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor");
         }
         {
             // About Page
@@ -152,6 +101,56 @@ public class SBHS {
 
     public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {
         pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
+    }
+    
+    public static void addSpriteTab(JTabbedPane pane, String name, int offset, int amount) throws Exception {
+        pane.addTab(name, null, createSpritePanel(name, offset, amount), "Edit " + name + " Sprite");
+    }
+
+    public static JPanel createSpritePanel(String name, int offset, int amount) throws Exception {
+        JPanel jp = new JPanel();
+        BufferedImage img = new BufferedImage(8 * 4, 8 * 4 * (int) Math.ceil(amount / 4), BufferedImage.TYPE_INT_RGB);
+        int x = 0, y = 0, squares = 0;
+        for (int i = offset, size = 4, rows = 8; i < offset + (size * rows * amount); i++) {
+            // if (j == 1) all += (hex(i) + ": ");
+            raf.seek(i);
+            int v = raf.read();
+            String value = reverse((v < 10 ? "0" : "") + v);
+            final int mid = value.length() / 2;
+            int[] parts = {
+                Integer.parseInt(value.substring(0, mid), 16),
+                Integer.parseInt(value.substring(mid), 16),
+            };
+            Color o1 = Color.black, o2 = Color.black;
+            try {
+                o1 = GBAColor.fromGBA(PALETTES.get("Sonic")[parts[0]]);
+                o2 = GBAColor.fromGBA(PALETTES.get("Sonic")[parts[1]]);
+            }
+            catch (Exception e) {}
+            int col1 = (o1.getRed() << 16) | (o1.getGreen() << 8) | o1.getBlue();
+            int col2 = (o2.getRed() << 16) | (o2.getGreen() << 8) | o2.getBlue();
+            System.out.println("X: " + x + " Y: " + y + " MaxX: " + img.getWidth() + " MaxY: " + img.getHeight());
+            img.setRGB(x++, y, col1);
+            img.setRGB(x++, y, col2);
+            {// CHECK X
+                if(x+2 >= img.getWidth() && (y != 0 && y % 7 == 0)){
+                    System.out.println("New line");
+                    x = 0;
+                    y++;
+                }
+                else if (x > 7 && x % 8 == 0) {
+                    x -= 8;
+                    y++;
+                    if (y > 7 && y % 8 == 0) {
+                        squares++;
+                        x += 8;
+                        y -= 8;
+                    }
+                }
+            }
+        }
+        jp.add(new JLabel(new ImageIcon(img)));
+        return jp;
     }
     
     public static JPanel createTextPanel(String name, int to, int from) throws Exception {
