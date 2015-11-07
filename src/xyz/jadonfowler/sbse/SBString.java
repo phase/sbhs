@@ -151,10 +151,9 @@ public class SBString {
                     break;
                 }
             }
-            /*else if (i == 0xFE || i == 0xFD) {
-                last = i;
-                continue;// ignore
-            }*/
+            /*
+             * else if (i == 0xFE || i == 0xFD) { last = i; continue;// ignore }
+             */
             else {
                 if (REVERSE_TABLE.containsKey(i)) {
                     s += REVERSE_TABLE.get(i);
@@ -164,7 +163,6 @@ public class SBString {
             last = i;
         }
         return s.replace("]]", "[").replace("]", "\n\n").replace("[", "\n").replaceAll("\\s\\s\\s", "");
-                //;
     }
 
     public static String convert(int last, int i) {

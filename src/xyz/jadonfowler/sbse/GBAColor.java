@@ -26,10 +26,7 @@ public class GBAColor {
         r = r > t ? t : r;
         g = g > t ? t : g;
         b = b > t ? t : b;
-        Color c = new Color(r
-                , 
-                g,
-                b);
+        Color c = new Color(r, g, b);
         return c;
     }
 
