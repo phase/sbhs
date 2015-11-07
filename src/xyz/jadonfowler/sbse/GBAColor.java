@@ -5,13 +5,6 @@ import java.awt.Color;
 public class GBAColor {
     public static Color fromGBA(String hex) {
         if (hex.length() != 4) throw new IllegalArgumentException("Woah! This string isn't 4 characters wide!");
-        /*
-         * System.out.print(hex + " : "); int h1 =
-         * Integer.parseInt(hex.split("(?<=\\G.{2})")[1], 16); int h2 =
-         * Integer.parseInt(hex.split("(?<=\\G.{2})")[0], 16); hex = (h1 < 10 ?
-         * "0" : "") + Integer.toHexString(h1) + (h2 < 10 ? "0" : "") +
-         * Integer.toHexString(h2); System.out.println(hex);
-         */
         int h = Integer.parseInt(hex, 16), r = 0, g = 0, b = 0;
         while (h - (4 * 256) >= 0) {
             b += 8;
