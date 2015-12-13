@@ -2,9 +2,7 @@
 Character sprites are left uncompressed, which makes it annoying to insert new images. Everything else is LZ77 compressed, so you can use unLZ to edit them.
 
 ##Documentation
-A majority of the game data has been documented at [Sonic Retro](http://info.sonicretro.org/SCHG:Sonic_Battle). Things that need to be documented:
-
-* Specific Character Palettes
+All docs on Sonic Battle reverse engineering are in (**`DOCUMENTATION.md`**)[DOCUMENTATION.md].
 
 ##Talking Text
 Talking text, otherwise known as the speech of the story, is left in a "compressed" hex format in the code. Here's a table of it.
