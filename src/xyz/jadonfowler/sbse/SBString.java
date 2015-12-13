@@ -99,10 +99,8 @@ public class SBString {
     };
     public static final HashMap<Integer, Character> REVERSE_TABLE = new HashMap<Integer, Character>() {
         {
-            for (char c : TABLE.keySet()) {
-                int i = TABLE.get(c);
-                put(i, c);
-            }
+            for (char c : TABLE.keySet())
+                put(TABLE.get(c), c);
         }
     };
 
@@ -110,14 +108,13 @@ public class SBString {
         s = s.replace("\n\n", "]^");
         s = s.replace("\n", "[^");
         int[] to = new int[(s.length() * 2) - 1];
-        int k = 0;
-        for (int i = 0; i < s.length() * 2; i += 2) {
+        for (int i = 0, k = 0; i < s.length() * 2; i += 2) {
             char c = s.toCharArray()[k++];
             if (!TABLE.keySet().contains(c)) {
                 i -= 2;
                 continue;
             }
-            to[i] = TABLE.get(c);
+            to[i] = (byte) (int) TABLE.get(c);
             try { // Should fail for the last one
                 to[i + 1] = 0; // 0x00
             }

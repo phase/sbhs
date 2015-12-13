@@ -1,8 +1,13 @@
 #Sonic Battle Hacking
 Character sprites are left uncompressed, which makes it annoying to insert new images. Everything else is LZ77 compressed, so you can use unLZ to edit them.
 
+##Documentation
+A majority of the game data has been documented at [Sonic Retro](http://info.sonicretro.org/SCHG:Sonic_Battle). Things that need to be documented:
+
+* Specific Character Palettes
+
 ##Talking Text
-Talking text, otherwise known as the speach of the story, is left in a "compressed" hex format in the code. Here's a table of it.
+Talking text, otherwise known as the speech of the story, is left in a "compressed" hex format in the code. Here's a table of it.
 
 ```
 Character|Hex Value|Character seen in a hex editor (ASCII Value)
@@ -38,7 +43,7 @@ $|04|N/A
 >|1E|N/A
 ?|1F|N/A
 @|20|Space
-A|21| !
+A|21|!
 B|22|"
 C|23|#
 D|24|$
