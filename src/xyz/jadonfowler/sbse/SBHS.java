@@ -43,7 +43,7 @@ public class SBHS {
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(700, 600);
         frame.setResizable(true);
-        gameLocation = getFile();
+        //gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTabbedPane mainTabs = new JTabbedPane();
@@ -79,8 +79,8 @@ public class SBHS {
         {
             // Sprite Editor
             JTabbedPane spriteTabs = new JTabbedPane();
-            addSpriteTab(spriteTabs, "Shadow Underneath", 0x47B800 + (64 * (-98 / 2)), 31);
-            addSpriteTab(spriteTabs, "Sonic", 0x47B800 + (64 * ((4 * 36) / 2)), 50);
+            addSpriteTab(spriteTabs, "Shadow Underneath", 0x47ABC0, 31);
+            addSpriteTab(spriteTabs, "Sonic", 0x47CA00, 50);
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor");
         }
         {
@@ -128,7 +128,7 @@ public class SBHS {
             catch (Exception e) {}
             int col1 = (o1.getRed() << 16) | (o1.getGreen() << 8) | o1.getBlue();
             int col2 = (o2.getRed() << 16) | (o2.getGreen() << 8) | o2.getBlue();
-            //System.out.println("X: " + x + " Y: " + y + " MaxX: " + img.getWidth() + " MaxY: " + img.getHeight());
+            System.out.println("X: " + x + " Y: " + y + " MaxX: " + img.getWidth() + " MaxY: " + img.getHeight());
             img.setRGB(x++, y, col1);
             img.setRGB(x++, y, col2);
             {// CHECK X
@@ -184,10 +184,10 @@ public class SBHS {
             }
         }
         s = s.replace("]", "").replace("[", "");
-        System.out.println(s);
+        //System.out.println(s);
         int[] conv = SBString.to(s);
-        System.out.println(orig.length + "\n" + conv.length + "\n" + "They are " 
-        + (Arrays.equals(orig, conv) ? "equal" : "NOT equal"));
+        //System.out.println(orig.length + "\n" + conv.length + "\n" + "They are " 
+        //+ (Arrays.equals(orig, conv) ? "equal" : "NOT equal"));
         //s = SBString.from(SBString.to(s));
         textArea.setText(s);
         // System.out.println(hex(Math.abs(from - to - SBString.to(s).length)));

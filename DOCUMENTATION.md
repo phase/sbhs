@@ -67,6 +67,7 @@ only know English and therefore can't list any offsets.
 
 | Description                | Offset (EU)     | Offset (US)     |
 |----------------------------|-----------------|-----------------|
+| Skills?                    |                 | 0C6D3C - 109E9F |
 | Sonic's story text         | 1DC290 - 1E2269 | 1DB468 - 1E1469 |
 | Tails' story text          | 1E2300 - 1E7E29 | 1E146A - 1E6FA7 |
 | Rouge's story text         | 1E7E29 - 1EE145 | 1E6FA8 - 1ED2C3 |
@@ -87,7 +88,7 @@ secret of Emerl in the next episode, 'Tails'!"
 
 ### Character Table
 
-Note that if you add _$20_ to a character from the ROM, it will give you
+Note that if you subtract _$20_ to a character from the ROM, it will give you
 that character in ASCII. Hence all lowercase letters are uppercase in
 the ROM and will not be listed here.
 
@@ -167,7 +168,7 @@ with Tile Layer Pro. This art includes attacks, card text art, and more.
 | 7AA00           | ASCII characters (for the dialogue scenes)             |
 | 8DDD0-A1400     | Attack Text                                            |
 | A1400-A1600     | Numbers for HUD                                        |
-| 10FE00-00113200 | Unknown (Dialogue sprites?)                            |
+| 10FE00-113200   | Unknown (Dialogue sprites?)                            |
 | ?????-1A5258    | Central City "SONIC"                                   |
 | 31FE00          | "Go" in a battle's start.                              |
 | 333200-333E00   | GAME SET                                               |
@@ -184,11 +185,20 @@ with Tile Layer Pro. This art includes attacks, card text art, and more.
 | 3E3400          | "Ground Aerial Defend", before the start of battle(2). |
 | 3ED000-3EF600   | "Comunication error" info.                             |
 | 423800-426A00   | Title screen art.                                      |
-| 47B800-A8C600   | Character battle sprites.                              |
+| 47ABC0-A8C600   | Character battle sprites.                              |
 | A8F000-BE6600   | Attack effects and other animated stuff in battle.     |
 | BE8400-BF1200   | Chao (in battle?)                                      |
 
-### 3D Map Editing
+### Character Battle Sprites
+Tile Layer Pro (surprisingly free) is a great tool to view/edit uncompressed
+sprites.
+
+| Character                    | Offset | Size (in 8x8 squares) |
+|------------------------------|--------|-----------------------|
+| Shadow Underneath Characters | 47ABC0 | 31                    |
+| Sonic                        | 47CA00 | 50?                   |
+
+## 3D Map Editing
 
 3D Maps are stored as little 2D grids on the BG2 and BG3 maps. They are
 made into fully-fledged 3D worlds on runtime. The texture for the bottom
@@ -221,64 +231,6 @@ texture value list:
 
 As a global value, 00 = Blank tile. Anything above values used = Black
 tile
-
-#### Tails' Lab
-
-Tiles use values from 01 to 10.
-
-| Value | Tile             |
-|-------|------------------|
-| 01    | Cylinder Part 1  |
-| 02    | Cylinder Part 2  |
-| 03    | Cylinder Part 3  |
-| 04    | Cylinder Part 4  |
-| 05    | Cylinder Part 5  |
-| 06    | Cylinder Part 6  |
-| 07    | Cylinder Part 7  |
-| 08    | Cylinder Part 8  |
-| 09    | Cylinder Part 9  |
-| 0A    | Cylinder Part 10 |
-| 0B    | Cylinder Part 11 |
-| 0C    | Cylinder Part 12 |
-| 0D    | Cylinder Part 13 |
-| 0E    | Cylinder Part 14 |
-| 0F    | Cylinder Part 14 |
-| 10    | Cylinder Part 15 |
-
-#### Crater
-
-Tiles use values 00 to 1C.
-
-| Value | Tile                                    |
-|-------|-----------------------------------------|
-| 01    | Icepit Part 1 / 52                      |
-| 02    | Icepit Part 2 / 53                      |
-| 03    | Icepit Part 3 / 7 / 54 / 58 / 62        |
-| 04    | Icepit Part 4 / 8 / 55 / 63             |
-| 05    | Icepit Part 5 / 9 / 56 / 60             |
-| 06    | Icepit Part 6 / 10 / 57 / 59 / 61       |
-| 07    | Icepit Part 11 / 64                     |
-| 08    | Icepit Part 12 / 65                     |
-| 09    | Icepit Part 13 / 17 / 27 / 66 / 70 / 74 |
-| 0A    | Icepit Part 14 / 18 / 28 / 67 / 71 / 75 |
-| 0B    | Icepit Part 15 / 19 / 68 / 72           |
-| 0C    | Icepit Part 16 / 18 / 20 / 69 / 73      |
-| 0D    | Icepit Part 21 / 76 / 80 / 84           |
-| 0E    | Icepit Part 22 / 77 / 81 / 85           |
-| 0F    | Icepit Part 23 / 26 / 31 / 39           |
-| 10    | Icepit Part 24 / 32 / 37 / 40           |
-| 11    | Icepit Part 25 / 33 / 38                |
-| 12    | Icepit Part 26 / 34 / 39                |
-| 13    | Icepit Part 40 / 96 / 100 / 104         |
-| 14    | Icepit Part 41 / 97 / 101 / 105         |
-| 15    | Icepit Part 42 / 46 / 50                |
-| 16    | Icepit Part 43 / 47 / 51                |
-| 17    | Icepit Part 44 / 48                     |
-| 18    | Icepit Part 45 / 49                     |
-| 19    | Icepit Part 86 / 90 / 94                |
-| 1A    | Icepit Part 87 / 91 / 95                |
-| 1B    | Icepit Part 98 / 102 / 106              |
-| 1C    | Icepit Part 99 / 103 / 107              |
 
 #### Emerald Beach
 
@@ -400,6 +352,64 @@ Beach, this has been divided into parts for your convenience.
 | 6A    | Rocks Part 76    |
 | 6B    | Rocks Part 77    |
 | 6C    | Rocks Part 78    |
+
+#### Tails' Lab
+
+Tiles use values from 01 to 10.
+
+| Value | Tile             |
+|-------|------------------|
+| 01    | Cylinder Part 1  |
+| 02    | Cylinder Part 2  |
+| 03    | Cylinder Part 3  |
+| 04    | Cylinder Part 4  |
+| 05    | Cylinder Part 5  |
+| 06    | Cylinder Part 6  |
+| 07    | Cylinder Part 7  |
+| 08    | Cylinder Part 8  |
+| 09    | Cylinder Part 9  |
+| 0A    | Cylinder Part 10 |
+| 0B    | Cylinder Part 11 |
+| 0C    | Cylinder Part 12 |
+| 0D    | Cylinder Part 13 |
+| 0E    | Cylinder Part 14 |
+| 0F    | Cylinder Part 14 |
+| 10    | Cylinder Part 15 |
+
+#### Crater
+
+Tiles use values 00 to 1C.
+
+| Value | Tile                                    |
+|-------|-----------------------------------------|
+| 01    | Icepit Part 1 / 52                      |
+| 02    | Icepit Part 2 / 53                      |
+| 03    | Icepit Part 3 / 7 / 54 / 58 / 62        |
+| 04    | Icepit Part 4 / 8 / 55 / 63             |
+| 05    | Icepit Part 5 / 9 / 56 / 60             |
+| 06    | Icepit Part 6 / 10 / 57 / 59 / 61       |
+| 07    | Icepit Part 11 / 64                     |
+| 08    | Icepit Part 12 / 65                     |
+| 09    | Icepit Part 13 / 17 / 27 / 66 / 70 / 74 |
+| 0A    | Icepit Part 14 / 18 / 28 / 67 / 71 / 75 |
+| 0B    | Icepit Part 15 / 19 / 68 / 72           |
+| 0C    | Icepit Part 16 / 18 / 20 / 69 / 73      |
+| 0D    | Icepit Part 21 / 76 / 80 / 84           |
+| 0E    | Icepit Part 22 / 77 / 81 / 85           |
+| 0F    | Icepit Part 23 / 26 / 31 / 39           |
+| 10    | Icepit Part 24 / 32 / 37 / 40           |
+| 11    | Icepit Part 25 / 33 / 38                |
+| 12    | Icepit Part 26 / 34 / 39                |
+| 13    | Icepit Part 40 / 96 / 100 / 104         |
+| 14    | Icepit Part 41 / 97 / 101 / 105         |
+| 15    | Icepit Part 42 / 46 / 50                |
+| 16    | Icepit Part 43 / 47 / 51                |
+| 17    | Icepit Part 44 / 48                     |
+| 18    | Icepit Part 45 / 49                     |
+| 19    | Icepit Part 86 / 90 / 94                |
+| 1A    | Icepit Part 87 / 91 / 95                |
+| 1B    | Icepit Part 98 / 102 / 106              |
+| 1C    | Icepit Part 99 / 103 / 107              |
 
 #### Chao Ruins
 
@@ -1014,8 +1024,7 @@ in the savestate.
 ### Palettes in the RAM
 
 The palette is located at 0x05000000, and it, like the game itself, uses
-an RCGB value. Many beautiful (or messy, \^\_\^) results can be made
-with palettes. And if yours is messy...;\_;
+an RCGB value.
 
 ### Map Editing in the RAM
 
