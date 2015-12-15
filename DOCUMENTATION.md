@@ -4,17 +4,6 @@ A lot of information in this document
 came from [Sonic Retro](http://info.sonicretro.org/index.php?title=SCHG:Sonic_Battle),
 though I did my fair share of adding to it.
 
-##unLZ-gba offsets
-Most of the images are LZ77 compressed, meaning you can edit them in unLZ.
-
-###Overworld
-Overworld char sprites go from 363 to 372. Before that are a bunch of option menus and whatnot, more on that later.
-
-To get a view of the sprites normally, hit minus all the way, then plus 3.
-
-###Talking
-Talking animations begin at 393 with Sonic and go to 425, ending with E-102.
-
 Text Editing
 ------------
 
@@ -51,7 +40,6 @@ text boxes.
 -   `07` = _'_ in the capital letter part
 -   `02` = _"_ in the capital letter part
 -   _+_ = `1` and _/_ = `0` in the capital letter part
--   a\ ff indicates string advance.
 -   `08` = _(_ and `09` = _)_ in the capital letter part.
 -   `0a` = _..._ in the capital letter part
 
@@ -157,6 +145,17 @@ Here is the character table:
 Art Editing
 -----------
 
+###unLZ-gba offsets
+Most of the images are LZ77 compressed, meaning you can edit them in unLZ.
+
+####Overworld
+Overworld char sprites go from 363 to 372. Before that are a bunch of option menus and whatnot, more on that later.
+
+To get a view of the sprites normally, hit minus all the way, then plus 3.
+
+####Talking
+Talking animations begin at 393 with Sonic and go to 425, ending with E-102.
+
 ### Decompressed Art
 
 Most of the art in Sonic Battle is decompressed, which is good. You can
@@ -190,8 +189,6 @@ with Tile Layer Pro. This art includes attacks, card text art, and more.
 | BE8400-BF1200   | Chao (in battle?)                                      |
 
 ### Character Battle Sprites
-Tile Layer Pro (surprisingly free) is a great tool to view/edit uncompressed
-sprites.
 
 | Character                    | Offset | Size (in 8x8 squares) |
 |------------------------------|--------|-----------------------|
@@ -758,19 +755,21 @@ are, as far as I know, impossible.
 
 ### The OAM Format
 
+```
 aa bb cc dd ee f? gg hh (next entry in OAM)
+```
 
-aa = Y Position on Screen\
-bb = Flags\
-cc = X Position on Screen\
-dd = Flags\
-ee = Tile Number\
-f = Palette No. (Backwards)\
-? = I have no idea what this is, but on some sprites it can do strange
-things when changed.\
-gg = I don't know what this is, but it does nothing.\
-hh = This byte is always either 00 or 01. But it doesn't do anything.\
- The default values in the OAM are:
+- aa = Y Position on Screen
+- bb = Flags
+- cc = X Position on Screen
+- dd = Flags
+- ee = Tile Number
+- f  = Palette No. (Backwards)
+- ?  = I have no idea what this is, but on some sprites it can do strange things when changed.
+- gg = I don't know what this is, but it does nothing.
+- hh = This byte is always either 00 or 01. But it doesn't do anything.
+
+The default values in the OAM are:
 
 -   Position: 0,0
 -   Mode: 0
@@ -785,7 +784,7 @@ hh = This byte is always either 00 or 01. But it doesn't do anything.\
 In other words, an empty slot will look something like:
 
 ```
-   00 02 00 00 00 00 00 00
+    00 02 00 00 00 00 00 00
 OR
     00 02 00 00 00 00 00 01
 OR
