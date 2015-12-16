@@ -43,7 +43,7 @@ public class SBHS {
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(700, 600);
         frame.setResizable(true);
-        //gameLocation = getFile();
+        // gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTabbedPane mainTabs = new JTabbedPane();
@@ -67,13 +67,15 @@ public class SBHS {
             // TODO Text editor
             JTabbedPane textTabs = new JTabbedPane();
             addTextTab(textTabs, "Sonic", 0x1DB3FC, 0x1E1467);
-            /*addTextTab(textTabs, "Tails", 0x1E146A, 0x1E6FA7);
-            addTextTab(textTabs, "Rouge", 0x1E6FA8, 0x1ED2C3);
-            addTextTab(textTabs, "Knuckles", 0x1ED2C4, 0x1F417F);
-            addTextTab(textTabs, "Amy", 0x1F4180, 0x1F9CDB);
-            addTextTab(textTabs, "Cream", 0x1F9CDC, 0x1FE86F);
-            addTextTab(textTabs, "Shadow", 0x1FE870, 0x206103);
-            addTextTab(textTabs, "Emerl", 0x206104, 0x20B131);*/
+            /*
+             * addTextTab(textTabs, "Tails", 0x1E146A, 0x1E6FA7);
+             * addTextTab(textTabs, "Rouge", 0x1E6FA8, 0x1ED2C3);
+             * addTextTab(textTabs, "Knuckles", 0x1ED2C4, 0x1F417F);
+             * addTextTab(textTabs, "Amy", 0x1F4180, 0x1F9CDB);
+             * addTextTab(textTabs, "Cream", 0x1F9CDC, 0x1FE86F);
+             * addTextTab(textTabs, "Shadow", 0x1FE870, 0x206103);
+             * addTextTab(textTabs, "Emerl", 0x206104, 0x20B131);
+             */
             mainTabs.addTab("Text Editor", null, textTabs, "Text Editor");
         }
         {
@@ -110,10 +112,9 @@ public class SBHS {
 
     public static JPanel createSpritePanel(String name, int offset, int amount) throws Exception {
         JPanel jp = new JPanel();
-        BufferedImage img = new BufferedImage(8 * 4, 8 * 4 * (int) Math.ceil(amount / 4), BufferedImage.TYPE_INT_RGB);
-        int x = 0, y = 0, squares = 0;
+        BufferedImage img = new BufferedImage(8 * 4 * 2, 8 * 4 * (int) Math.ceil(amount / 4), BufferedImage.TYPE_INT_RGB);
+        int x = 1, y = 1, s = 0;
         for (int i = offset, size = 4, rows = 8; i < offset + (size * rows * amount); i++) {
-            // if (j == 1) all += (hex(i) + ": ");
             raf.seek(i);
             int v = raf.read();
             String value = reverse((v < 10 ? "0" : "") + v);
@@ -128,22 +129,25 @@ public class SBHS {
             catch (Exception e) {}
             int col1 = (o1.getRed() << 16) | (o1.getGreen() << 8) | o1.getBlue();
             int col2 = (o2.getRed() << 16) | (o2.getGreen() << 8) | o2.getBlue();
-            System.out.println("X: " + x + " Y: " + y + " MaxX: " + img.getWidth() + " MaxY: " + img.getHeight());
-            img.setRGB(x++, y, col1);
-            img.setRGB(x++, y, col2);
-            {// CHECK X
-                if (x + 2 >= img.getWidth() && (y != 0 && y % 7 == 0)) {
-                    //System.out.println("New line");
-                    x = 0;
-                    y++;
-                }
-                else if (x > 7 && x % 8 == 0) {
-                    x -= 8;
-                    y++;
-                    if (y > 7 && y % 8 == 0) {
-                        squares++;
-                        x += 8;
-                        y -= 8;
+            System.out.println(
+                    "S: " + s + " X: " + x + " Y: " + y + " MaxX: " + img.getWidth() + " MaxY: " + img.getHeight());
+            img.setRGB(x - 1, y - 1, col1);
+            x++;
+            System.out.println(
+                    "S: " + s + " X: " + x + " Y: " + y + " MaxX: " + img.getWidth() + " MaxY: " + img.getHeight());
+            img.setRGB(x - 1, y - 1, col2);
+            x++;
+            if (x != 0 && x % 9 == 0) {
+                x -= 8;
+                y++;
+                if (y != 0 && y % 9 == 0) {
+                    y -= 8;
+                    x += 8;
+                    s++;
+                    if (s == 4) {
+                        s = 0;
+                        x = 0;
+                        y += 8;
                     }
                 }
             }
@@ -153,7 +157,7 @@ public class SBHS {
     }
 
     public static JPanel createTextPanel(String name, int to, int from) throws Exception {
-        //TODO
+        // TODO
         // System.out.println(name);
         JPanel p = new JPanel();
         JTextArea textArea = new JTextArea(100, 50);
@@ -165,11 +169,11 @@ public class SBHS {
         textArea.setEditable(true);
         int last = 0;
         String s = "";
-        int[] orig = new int[from-to];
+        int[] orig = new int[from - to];
         for (int i = to; i < from; i++) {
             raf.seek(i);
             int value = raf.read();
-            orig[i-to] = value;
+            orig[i - to] = value;
             if (value == 0 && last == 0) {
                 s += " ";
                 last = -1;
@@ -184,11 +188,12 @@ public class SBHS {
             }
         }
         s = s.replace("]", "").replace("[", "");
-        //System.out.println(s);
+        // System.out.println(s);
         int[] conv = SBString.to(s);
-        //System.out.println(orig.length + "\n" + conv.length + "\n" + "They are " 
-        //+ (Arrays.equals(orig, conv) ? "equal" : "NOT equal"));
-        //s = SBString.from(SBString.to(s));
+        // System.out.println(orig.length + "\n" + conv.length + "\n" + "They
+        // are "
+        // + (Arrays.equals(orig, conv) ? "equal" : "NOT equal"));
+        // s = SBString.from(SBString.to(s));
         textArea.setText(s);
         // System.out.println(hex(Math.abs(from - to - SBString.to(s).length)));
         JButton write = new JButton("Write to ROM");
