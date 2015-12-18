@@ -1,10 +1,6 @@
 /*
  * Script to patch binary files
  */
-
-String patch = new File(args[0]).text
-RandomAccessFile raf = new RandomAccessFile(args[1], "rw")
-
 class Patch {
     public int offset
     public def patches = []
@@ -23,59 +19,78 @@ class Patch {
         return parts;
     }
 }
-def patches = []
 
-String currentOffset = ""
-String offsetBuffer = ""
-String codeBuffer = ""
-boolean offsetFlag = false
-boolean commentFlag = false
-char last
-int i = 0
+String action = args[0]
 
-for(char c : patch.toCharArray()) {
-    i++
-    if(commentFlag){
-        if(c == ';' || c == '\n'){
-            commentFlag = false
+if(action == "apply") {
+    if(args.length != 3) {
+        println "patch.jar.exe apply <new> <old>"
+        System.exit(0)
+    }
+    String patch = new File(args[1]).text
+    RandomAccessFile raf = new RandomAccessFile(args[2], "rw")
+    def patches = []
+
+    String currentOffset = ""
+    String offsetBuffer = ""
+    String codeBuffer = ""
+    boolean offsetFlag = false
+    boolean commentFlag = false
+    int i = 0
+
+    for(char c : patch.toCharArray()) {
+        i++
+        if(commentFlag){
+            if(c == ';' || c == '\n'){
+                commentFlag = false
+            }
+            continue;
         }
-        continue;
-    }
-    else if(c == ';') {
-        commentFlag = true
-    }
-    else if(offsetFlag) {
-        if(c == '\n') {
-            currentOffset = offsetBuffer
+        else if(c == ';') {
+            commentFlag = true
+        }
+        else if(offsetFlag) {
+            if(c == '\n') {
+                currentOffset = offsetBuffer
+                offsetBuffer = ""
+                offsetFlag = false
+            } else {
+                offsetBuffer += c
+            }
+        }
+        else if(c == '$') {
             offsetBuffer = ""
-            offsetFlag = false
-        } else {
-            offsetBuffer += c
+            offsetFlag = true
+            if(currentOffset != "") {
+                patches << new Patch(currentOffset.replaceAll(/\s/,""), codeBuffer.replaceAll(/\s/,""))
+                currentOffset = ""
+                offsetBuffer = ""
+                codeBuffer = ""
+            }
         }
-    }
-    else if(c == '$') {
-        offsetBuffer = ""
-        offsetFlag = true
-        if(currentOffset != "") {
+        else if (i == patch.length()) {
+            codeBuffer += c
             patches << new Patch(currentOffset.replaceAll(/\s/,""), codeBuffer.replaceAll(/\s/,""))
-            currentOffset = ""
-            offsetBuffer = ""
-            codeBuffer = ""
+            break;
         }
+        else codeBuffer += c
     }
-    else if (i == patch.length()) {
-        codeBuffer += c
-        patches << new Patch(currentOffset.replaceAll(/\s/,""), codeBuffer.replaceAll(/\s/,""))
-        break;
+    for(Patch p : patches) {
+        println "Applying Patch " + p.offset + ": " + p.patches
+        raf.seek(p.offset)
+        raf.write(p.patches as byte[], 0, p.patches.size())
     }
-    else {
-        codeBuffer += c
-        //println codeBuffer.replaceAll(/\s/,"")
-    }
-    last = c
 }
-for(Patch p : patches) {
-    println "Applying Patch " + p.offset + ": " + p.patches
-    raf.seek(p.offset)
-    raf.write(p.patches as byte[], 0, p.patches.size())
+else if(action == "create") {
+    if(args.length != 3) {
+        println "patch.jar.exe create <new> <old>"
+        System.exit(0)
+    }
+    RandomAccessFile n = new RandomAccessFile(args[1], "rw")
+    RandomAccessFile o = new RandomAccessFile(args[2], "rw")
+    int maxl = Math.max(n.length(), o.length())
+    int minl = Math.max(n.length(), o.length())
+}
+else {
+    println "patch.jar.exe: Action not found"
 }
