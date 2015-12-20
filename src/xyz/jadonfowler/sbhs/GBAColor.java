@@ -1,6 +1,7 @@
 package xyz.jadonfowler.sbhs;
 
 import java.awt.Color;
+import java.awt.image.*;
 
 public class GBAColor {
     public static Color fromGBA(String hex) {
@@ -35,4 +36,14 @@ public class GBAColor {
     public static String toGBA(Color c) {
         return toGBA(c.getRed(), c.getGreen(), c.getBlue());
     }
+
+    public static int[] toInts(String s) {
+        assert s.length() == 4 : "Woah! This string isn't 4 characters wide!";
+        char[] c = s.toCharArray();
+        int[] i = new int[2];
+        i[0] = Integer.parseInt(c[0] + "" + c[1], 16);
+        i[1] = Integer.parseInt(c[2] + "" + c[3], 16);
+        return i;
+    }
+
 }

@@ -193,7 +193,7 @@ with Tile Layer Pro. This art includes attacks, card text art, and more.
 
 **Note:** Tile Layer Pro does **not**
 [display these tiles correctly](https://twitter.com/Phasesaber/status/678361932290592769),
-each square is off by 2 rows:
+each tile is off by 2 rows:
 
 ![TLP Error Example](https://pbs.twimg.com/media/CWoGlRvUwAAaD6K.png)
 
@@ -204,10 +204,10 @@ here's how this works:
 - `1-F` the number from the palette which is
   used to display the pixel from the sprite
 
-| Character                    | Offset | Amount of 8x8 squares |
-|------------------------------|--------|-----------------------|
-| Ground Shadow                | 47ABB8 | 31                    |
-| Sonic                        | 47B080 | 50?                   |
+| Character                    | Offset |
+|------------------------------|--------|
+| Ground Shadow                | 47ABB8 |
+| Sonic                        | 47B078 |
 
 Each section of each sprite is split up into 8x8 grids.
 The number that is in each space is the color that shows up in game,

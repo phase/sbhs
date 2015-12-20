@@ -26,6 +26,10 @@ public class PaletteManager {
                     "Above the eye, shoe/glove color" });
         }
     };
+    
+    /**
+     * "sonic" -> ["23452345", "23452345", ...]
+     */
     public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>();
 
     public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {

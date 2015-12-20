@@ -11,14 +11,13 @@ public class SBHS {
     public static final String VERSION = "1.1";
     public static String gameLocation = "res/sonic.gba";
     public static RandomAccessFile raf;
-    public static final int SpritesStart = 0x47B800 + (64 * (-98 / 2));
-    public static final int SpritesEnd = 0xA8C600;
     public static JFrame frame;
+    public static final int WIDTH = 700, HEIGHT = 600;
 
     public static void main(String[] args) throws Exception {
         // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
-        frame.setSize(700, 600);
+        frame.setSize(WIDTH, HEIGHT);
         frame.setResizable(true);
         // gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
@@ -59,7 +58,7 @@ public class SBHS {
             // Sprite Editor
             JTabbedPane spriteTabs = new JTabbedPane();
             SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 32);
-            SpriteManager.addSpriteTab(spriteTabs, "Sonic", 0x47B080, 32);
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47B078);
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor");
         }
         {
