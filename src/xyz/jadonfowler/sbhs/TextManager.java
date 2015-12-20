@@ -2,6 +2,7 @@ package xyz.jadonfowler.sbhs;
 
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 
 public class TextManager {
     public static void addTextTab(JTabbedPane pane, String name, int to, int from) throws Exception {
@@ -11,7 +12,6 @@ public class TextManager {
     public static JPanel createTextPanel(String name, int to, int from) throws Exception {
         // TODO
         // System.out.println(name);
-        JPanel p = new JPanel();
         JTextArea textArea = new JTextArea(100, 50);
         /*
          * JScrollPane scroll = new JScrollPane(textArea,
@@ -69,12 +69,13 @@ public class TextManager {
             }
         });
         // p.add(write);
-        p.add(textArea);
-        JPanel p1 = new JPanel();
-        p1.add(write);
+        JScrollPane sp = new JScrollPane(textArea);
+        sp.setBounds(23, 3, 394, 20);
+        JPanel bp = new JPanel();
+        bp.add(write);
         JPanel globalPanel = new JPanel();
-        globalPanel.add(p1);
-        globalPanel.add(p);
+        globalPanel.add(bp);
+        globalPanel.add(sp);
         return globalPanel;
     }
 }

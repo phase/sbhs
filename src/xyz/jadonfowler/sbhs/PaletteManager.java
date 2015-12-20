@@ -49,6 +49,7 @@ public class PaletteManager {
             }
         }
         PALETTES.put(name, colors);
+        if (name.equals("Sonic")) PALETTES.put("Ground Shadow", colors);
         // System.out.println(Arrays.toString(colors));
         int i = 0;
         JPanel jp = new JPanel();

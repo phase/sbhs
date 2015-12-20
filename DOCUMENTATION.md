@@ -184,16 +184,57 @@ with Tile Layer Pro. This art includes attacks, card text art, and more.
 | 3E3400          | "Ground Aerial Defend", before the start of battle(2). |
 | 3ED000-3EF600   | "Comunication error" info.                             |
 | 423800-426A00   | Title screen art.                                      |
-| 47ABC0-A8C600   | Character battle sprites.                              |
+| 47ABB8-A8C600   | Character battle sprites.                              |
 | A8F000-BE6600   | Attack effects and other animated stuff in battle.     |
 | BE8400-BF1200   | Chao (in battle?)                                      |
 
 ### Character Battle Sprites
 
+**Note:** Tile Layer Pro does **not**
+[display these tiles correctly](https://twitter.com/Phasesaber/status/678361932290592769),
+each one is off by 2 rows:
+
+![TLP Error Example](https://pbs.twimg.com/media/CWoGlRvUwAAaD6K.png)
+
+In this section there is a lot of notation using `_`'s and numbers,
+here's how this works:
+
+- `_` 0 or "blank" space in sprite
+- `1-F` the number from the palette which is
+  used to display the pixel from the sprite
+
 | Character                    | Offset | Size (in 8x8 squares) |
 |------------------------------|--------|-----------------------|
-| Shadow Underneath Characters | 47ABC0 | 31                    |
+| Ground Shadow                | 47ABB8 | 31                    |
 | Sonic                        | 47CA00 | 50?                   |
+
+Each section of each sprite is split up into 8x8 grids.
+The number that is in each space is the color that shows up in game,
+which is retrieved from the palette of the character. HxD can only
+go down to 8 bytes per line, so keep this in mind when editing.
+
+The numbers are stored two per byte in reverse order,
+meaning `00 00 00 10` is one layer that shows up like
+`_______1` in game. `00 00 00 00 10 00 00 00` will
+show up as:
+
+```
+________
+_1______
+```
+
+####Ground Shadow
+The ground shadow (the shadow that displays underneath every
+character's feet, not Shadow the Hedgehog) has 3 states to it:
+
+- Jump 0 (Sqaures 1-7): When a character is on the ground,
+  they will have this shadow.
+- Jump 1 (Squares 9-15): When a character jumps, they will have this shadow.
+- Jump 2 (Squares 18-22): For characters that can double jump,
+  this shadow appears under them when they are at the peak
+  of their jump.
+- Jump 3 (Squares 26-30): A third shadow for characters that can go really high
+  like Rouge.
 
 ## 3D Map Editing
 
