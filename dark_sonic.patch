@@ -1,0 +1,19 @@
+; Dark Sonic Patch ;
+
+$47AFB8 ; Sonic's Palette ;
+E0 7F
+FF 7F
+D6 DA
+CE 39
+84 10
+60 FE
+C6 18
+C0 18
+00 00
+C6 18
+C0 18
+00 00
+39 7F
+73 7E
+8C 7D
+60 82
