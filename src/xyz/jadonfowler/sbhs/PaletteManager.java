@@ -1,5 +1,6 @@
 package xyz.jadonfowler.sbhs;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
@@ -49,7 +50,12 @@ public class PaletteManager {
             }
         }
         PALETTES.put(name, colors);
-        if (name.equals("Sonic")) PALETTES.put("Ground Shadow", colors);
+        if (name.equals("Sonic")){
+            String[] shadowColors = (String[]) Arrays.asList(colors).toArray();
+            shadowColors[0] = GBAColor.toGBA(Color.white);
+            shadowColors[1] = GBAColor.toGBA(Color.gray);
+            PALETTES.put("Ground Shadow", shadowColors);
+        }
         // System.out.println(Arrays.toString(colors));
         int i = 0;
         JPanel jp = new JPanel();

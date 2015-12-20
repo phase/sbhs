@@ -58,8 +58,8 @@ public class SBHS {
         {
             // Sprite Editor
             JTabbedPane spriteTabs = new JTabbedPane();
-            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 31);
-            SpriteManager.addSpriteTab(spriteTabs, "Sonic", 0x47CA00, 50);
+            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 32);
+            SpriteManager.addSpriteTab(spriteTabs, "Sonic", 0x47B080, 32);
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor");
         }
         {

@@ -43,7 +43,8 @@ text boxes.
 -   `08` = _(_ and `09` = _)_ in the capital letter part.
 -   `0a` = _..._ in the capital letter part
 
-For example, the string for _Chaos Emeralds_ would look like: `23 00 48 00 41 00 4F 00 53 00 00 00 25 00 4D 00 45 00 52 00 41 00 4C 00 44 00 53 00 FB FF`
+For example, the string for _Chaos Emeralds_ would look like:
+`23 00 48 00 41 00 4F 00 53 00 00 00 25 00 4D 00 45 00 52 00 41 00 4C 00 44 00 53 00 FB FF`
 
 In your hex editor, it looks like: `\#.H.A.O.S...%.M.E.R.A.L.D.S..`
 
@@ -192,7 +193,7 @@ with Tile Layer Pro. This art includes attacks, card text art, and more.
 
 **Note:** Tile Layer Pro does **not**
 [display these tiles correctly](https://twitter.com/Phasesaber/status/678361932290592769),
-each one is off by 2 rows:
+each square is off by 2 rows:
 
 ![TLP Error Example](https://pbs.twimg.com/media/CWoGlRvUwAAaD6K.png)
 
@@ -203,10 +204,10 @@ here's how this works:
 - `1-F` the number from the palette which is
   used to display the pixel from the sprite
 
-| Character                    | Offset | Size (in 8x8 squares) |
+| Character                    | Offset | Amount of 8x8 squares |
 |------------------------------|--------|-----------------------|
 | Ground Shadow                | 47ABB8 | 31                    |
-| Sonic                        | 47CA00 | 50?                   |
+| Sonic                        | 47B080 | 50?                   |
 
 Each section of each sprite is split up into 8x8 grids.
 The number that is in each space is the color that shows up in game,
@@ -225,7 +226,7 @@ _1______
 
 ####Ground Shadow
 The ground shadow (the shadow that displays underneath every
-character's feet, not Shadow the Hedgehog) has 3 states to it:
+character's feet, not Shadow the Hedgehog) has 4 states to it:
 
 - Jump 0 (Sqaures 1-7): When a character is on the ground,
   they will have this shadow.
@@ -238,14 +239,14 @@ character's feet, not Shadow the Hedgehog) has 3 states to it:
 
 ## 3D Map Editing
 
-3D Maps are stored as little 2D grids on the BG2 and BG3 maps. They are
-made into fully-fledged 3D worlds on runtime. The texture for the bottom
-of the platforms are stored as sprites. Tiles are represented by a byte
-value and go along in rows. When one row is done, the tiles go on to the
-next. There are 2 maps for a battle map; the texture map and the ground
-map. The texture map contains the textures above the ground (except in
-the Crater map), and the ground map contains the textures and shadows at
-ground level.
+3D Maps are stored as little 2D grids on the BG2 and BG3 maps (use VBA
+to see how this works). They are made into fully-fledged 3D worlds on
+runtime. The texture for the bottom of the platforms are stored as
+sprites. Tiles are represented by a byte value and go along in rows.
+When one row is done, the tiles go on to the next. There are 2 maps for
+a battle map; the texture map and the ground map. The texture map contains
+the textures above the ground (except in the Crater map), and the ground
+map contains the textures and shadows at ground level.
 
 ### Texture Map Section
 
