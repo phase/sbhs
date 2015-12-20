@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
 import java.util.*;
+import javax.imageio.*;
 import javax.swing.*;
 
 public class SpriteManager {
@@ -104,13 +105,34 @@ public class SpriteManager {
         JButton save = new JButton("Save sprites");
         save.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                System.out.println("Save image");
+                System.out.println("Saving image " + name + ": " + state);
+                BufferedImage i = SPRITES.get(name).get(state);
+                JFileChooser fc = new JFileChooser();
+                if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        File o = fc.getSelectedFile();
+                        ImageIO.write(i, "png", o);
+                    }
+                    catch (IOException x) {
+                        x.printStackTrace();
+                    }
+                }
             }
         });
         JButton upload = new JButton("Upload sprites");
         upload.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                System.out.println("Upload image");
+                System.out.println("Uploading image " + name + ": " + state);
+                JFileChooser fc = new JFileChooser();
+                if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        BufferedImage i = ImageIO.read(fc.getSelectedFile());
+                        SPRITES.get(name).put(state, i);
+                    }
+                    catch (IOException x) {
+                        x.printStackTrace();
+                    }
+                }
             }
         });
         JPanel jp = new JPanel();
