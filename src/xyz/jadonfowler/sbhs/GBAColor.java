@@ -1,7 +1,6 @@
 package xyz.jadonfowler.sbhs;
 
 import java.awt.Color;
-import java.awt.image.*;
 
 public class GBAColor {
     public static Color fromGBA(String hex) {

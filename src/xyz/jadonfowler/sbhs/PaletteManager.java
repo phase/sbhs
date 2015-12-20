@@ -8,6 +8,7 @@ import javax.swing.*;
 
 public class PaletteManager {
     public static final HashMap<String, String[]> PALETTE_INFO = new HashMap<String, String[]>() {
+        private static final long serialVersionUID = 1L;
         {
             String[] g = { "Background (useless)", "Eye color and shoe/glove reflection",
                     "Above the eye, shoe/glove color", "Outside of shoe/glove", "Outline of shoe/glove",
@@ -64,7 +65,7 @@ public class PaletteManager {
         int i = 0;
         JPanel jp = new JPanel();
         jp.setLayout(new BoxLayout(jp, BoxLayout.Y_AXIS));
-        for (String s : colors) {
+        for (@SuppressWarnings("unused") String s : colors) {
             i++;
             JButton jb = new JButton(name + " Color " + i + ": " + (PALETTE_INFO.get(name) == null ? "Something?"
                     : PALETTE_INFO.get(name).length < i ? "Something?" : PALETTE_INFO.get(name)[i - 1]));

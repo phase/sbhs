@@ -1,6 +1,7 @@
 package xyz.jadonfowler.sbhs;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
 import java.util.*;
@@ -93,11 +94,33 @@ public class SpriteManager {
             }
             x++;
         }
+        SPRITES.get(name).put(state, img);
+        JButton write = new JButton("Write to ROM");
+        write.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                writeImage(name, state, offset, amount);
+            }
+        });
+        JButton save = new JButton("Save sprites");
+        save.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                System.out.println("Save image");
+            }
+        });
+        JButton upload = new JButton("Upload sprites");
+        upload.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                System.out.println("Upload image");
+            }
+        });
         JPanel jp = new JPanel();
         int h = (int) Math.ceil(amount / 4);
         int sw = 200 / h * 12;
         int sh = SBHS.frame.getHeight();
         ImageIcon spriteSheet = new ImageIcon(scale(img, sw, sh));
+        jp.add(write);
+        jp.add(save);
+        jp.add(upload);
         jp.add(new JLabel(spriteSheet));
         return jp;
     }
@@ -110,13 +133,16 @@ public class SpriteManager {
      */
     public static void writeImage(String name, String state, int offset, int amount) {
         BufferedImage img = SPRITES.get(name).get(state);
+        printPalette(PaletteManager.PALETTES.get(name));
         int x = 1, y = 1, s = 0;
         for (int i = offset, size = 4, rows = 8; i < offset + (size * rows * amount); i++) {
-            String c1 = getGBAColorFromImage(img, x - 1, y - 1);
+            Color c1 = getColorFromImage(img, x - 1, y - 1);
             // This gets the index of the color in the palette,
             // which is the value we need to write to the ROM
-            int v1 = ((ArrayList<String>) Arrays.asList(PaletteManager.PALETTES.get(name))).indexOf(c1);
+            //System.out.println("Palette contains " + c1 + ": " + Arrays.asList(PaletteManager.PALETTES.get(name)).contains(c1));
+            int v1 = getIndexFromPalette(name, c1);
             x++;
+            Color c2 = getColorFromImage(img, x - 1, y - 1);
             if (x != 0 && x % 8 == 0) {
                 x -= 8;
                 if (y != 0 && y % 8 == 0) {
@@ -131,19 +157,24 @@ public class SpriteManager {
                 }
                 y++;
             }
-            String c2 = getGBAColorFromImage(img, x - 1, y - 1);
             x++;
-            int v2 = ((ArrayList<String>) Arrays.asList(PaletteManager.PALETTES.get(name))).indexOf(c2);
-            //Writing to ROM
+            //System.out.println("Palette contains " + c2 + ": " + Arrays.asList(PaletteManager.PALETTES.get(name)).contains(c2));
+            int v2 = getIndexFromPalette(name, c2);
+            // Writing to ROM
+//            if (v1 < 0) v1 = 0;
+//            if (v2 < 0) v2 = 0;
             int v = Integer.parseInt(Integer.toString(v2, 16) + "" + Integer.toString(v1, 16), 16);
             try {
                 SBHS.raf.seek(i);
                 SBHS.raf.write(v);
+                System.out.println("Colors: " + c1 + " " + c2 + " Wrote: " + Integer.toString(v, 16) + " @ 0x"
+                        + Integer.toString(i, 16));
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        printPalette(PaletteManager.PALETTES.get(name));
     }
 
     /**
@@ -174,7 +205,31 @@ public class SpriteManager {
      * @param y Y of pixel
      * @return GBA Color of pixel's color
      */
-    public static String getGBAColorFromImage(BufferedImage img, int x, int y) {
-        return GBAColor.toGBA(new Color(img.getRGB(x, y)));
+    public static Color getColorFromImage(BufferedImage img, int x, int y) {
+        int rgb = img.getRGB(x, y);
+        Color c = new Color(rgb);
+        System.out.print(" " + c + "(" + GBAColor.toGBA(c) + ") ");
+        return c;
+    }
+
+    private static void printPalette(String[] s) {
+        System.out.print("[");
+        for (int i = 0; i < s.length; i++) {
+            System.out.print(s[i] + "(");
+            System.out.print(GBAColor.fromGBA(s[i]) + ")");
+            if (i < s.length - 1) System.out.print(", ");
+        }
+        System.out.println("]");
+    }
+    
+    public static int getIndexFromPalette(String name, Color color) {
+        ArrayList<String> p = new ArrayList<String>(Arrays.asList(PaletteManager.PALETTES.get(name)));
+        for (String s : p) {
+            int i = p.indexOf(s);
+            Color pc = GBAColor.fromGBA(s);
+            if (pc.equals(color)) return i;
+        }
+        System.out.print("Error finding color " + color);
+        return 0;
     }
 }

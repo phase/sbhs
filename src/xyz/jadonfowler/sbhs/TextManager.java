@@ -2,7 +2,6 @@ package xyz.jadonfowler.sbhs;
 
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.*;
 
 public class TextManager {
     public static void addTextTab(JTabbedPane pane, String name, int to, int from) throws Exception {
