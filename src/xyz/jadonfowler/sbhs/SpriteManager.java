@@ -24,7 +24,23 @@ public class SpriteManager {
 
     public static void addCharacterSpriteTab(JTabbedPane pane, String name, int offset) throws Exception {
         JTabbedPane t = new JTabbedPane();
-        t.addTab("Idle", null, createSpritePanel(name, "Idle", offset, 32 * 8), "Edit " + name + " Idle Sprite");
+        // When I try to condense the equations into numbers, I get weird
+        // errors. Probably has to do with the fact that SEGA is so idiotic that
+        // they put giant spaces in between certain animations for no reason
+        // whatsoever. It was nice for the first few animations, but then I
+        // noticed that not all of them had it, which makes me confused as
+        // to why they were there to begin with. Thank you SEGA, for making
+        // a game more confusing that Minecraft's protocol.
+        t.addTab("Idle", null, createSpritePanel(name, "Idle", offset, 32 * 8), 
+                "Edit " + name + " Idle Sprite");
+        // Why the hell there is a "jog" animation?! JUST GO INTO RUNNING
+        // ALREADY SEGA, YOU SURE HAVEN'T DONE THAT IN A WHILE.
+        t.addTab("Jog", null, createSpritePanel(name, "Jog", offset + (64 * 2 * 64) + (64 * 16), 8 * 4),
+                "Edit " + name + " Jog Sprite");
+        t.addTab("Run", null, createSpritePanel(name, "Run", offset + (64 * 3 * 64) + (64 * 24), 32 * 10),
+                "Edit " + name + " Run Sprite");
+        t.addTab("Halt", null, createSpritePanel(name, "Run", offset + (64 * 5 * 64) + (64*12), 32 * 8),
+                "Edit " + name + " Halt Sprite");
         pane.addTab(name, null, t, "Edit " + name + " Sprite");
     }
 
@@ -146,7 +162,7 @@ public class SpriteManager {
         JPanel jp = new JPanel();
         int h = (int) Math.ceil(amount / 4);
         int sw = 200 / h * 12;
-        int sh = SBHS.frame.getHeight();
+        int sh = SBHS.frame.getHeight() - 64;
         ImageIcon spriteSheet = new ImageIcon(scale(img, sw, sh));
         jp.add(write);
         jp.add(save);

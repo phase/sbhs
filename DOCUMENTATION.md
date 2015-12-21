@@ -224,6 +224,19 @@ ________
 _1______
 ```
 
+####Animation Frames
+Each animation has a certain number of frames
+(listed in order of appearance in ROM).
+
+| Animation  | Frames |
+|------------|--------|
+| Idle       | 6      |
+| Jog        | 1      |
+| Running    | 8      |
+| Halt       | 4      |
+| Dash       | 7      |
+| Turning    | 3      |
+
 ####Ground Shadow
 The ground shadow (the shadow that displays underneath every
 character's feet, not Shadow the Hedgehog) has 4 states to it:

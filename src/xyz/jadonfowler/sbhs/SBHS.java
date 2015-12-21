@@ -15,7 +15,6 @@ public class SBHS {
     public static final int WIDTH = 700, HEIGHT = 600;
 
     public static void main(String[] args) throws Exception {
-        System.out.println("SBHS");
         // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(WIDTH, HEIGHT);
