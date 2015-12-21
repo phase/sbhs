@@ -2,8 +2,10 @@ package xyz.jadonfowler.sbhs;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import java.io.*;
 import java.util.*;
+import javax.imageio.*;
 import javax.swing.*;
 
 public class PaletteManager {
@@ -96,6 +98,53 @@ public class PaletteManager {
             });
             jp.add(jb);
         }
+        JButton upload = new JButton("  Upload Palette");
+        upload.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Uploading palette " + name);
+                JFileChooser fc = new JFileChooser();
+                if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        String[] colors = new String[16];
+                        BufferedImage img = ImageIO.read(fc.getSelectedFile());
+                        for(int x = 0; x < 16; x++) {
+                            Color c = new Color(img.getRGB(x, 0));
+                            colors[x] = GBAColor.toGBA(c);
+                        }
+                        PALETTES.remove(name);
+                        PALETTES.put(name, colors);
+                    }
+                    catch (IOException x) {
+                        x.printStackTrace();
+                    }
+                }
+            }
+        });
+        jp.add(upload);
+        JButton save = new JButton("  Save Palette");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Saving palette " + name);
+                //Create Image
+                BufferedImage i = new BufferedImage(16, 1, BufferedImage.TYPE_INT_RGB);
+                for (int x = 0; x < 16; x++) {
+                    Color c = GBAColor.fromGBA(PALETTES.get(name)[x]);
+                    i.setRGB(x, 0, c.getRGB());
+                }
+                //Save Image
+                JFileChooser fc = new JFileChooser();
+                if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        File o = fc.getSelectedFile();
+                        ImageIO.write(i, "png", o);
+                    }
+                    catch (IOException x) {
+                        x.printStackTrace();
+                    }
+                }
+            }
+        });
+        jp.add(save);
         return jp;
     }
 }

@@ -18,7 +18,7 @@ public class SpriteManager {
             put("Knuckles", new HashMap<String, BufferedImage>());
             put("Tails", new HashMap<String, BufferedImage>());
             put("Amy", new HashMap<String, BufferedImage>());
-            //TODO finish
+            // TODO finish
         }
     };
 
@@ -47,14 +47,16 @@ public class SpriteManager {
             int v1 = Integer.parseInt(value.toCharArray()[0] + "", 16);
             int v2 = Integer.parseInt(value.toCharArray()[1] + "", 16);
             try {
+                //printPalette(PaletteManager.PALETTES.get(name));
                 o1 = GBAColor.fromGBA(PaletteManager.PALETTES.get(name)[v1]);
                 o2 = GBAColor.fromGBA(PaletteManager.PALETTES.get(name)[v2]);
             }
             catch (Exception e) {
+                System.exit(-1);
                 e.printStackTrace();
             }
-            int col1 = (o1.getRed() << 16) | (o1.getGreen() << 8) | o1.getBlue();
-            int col2 = (o2.getRed() << 16) | (o2.getGreen() << 8) | o2.getBlue();
+            int col1 = o1.getRGB();
+            int col2 = o2.getRGB();
             // if (v1 == 0) System.out.println(o1);
             // System.out.println(
             // " S: " + s + " X: " + x + " Y: " + y + " MaxX: " + img.getWidth()
