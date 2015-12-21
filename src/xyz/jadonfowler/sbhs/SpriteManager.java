@@ -35,12 +35,30 @@ public class SpriteManager {
                 "Edit " + name + " Idle Sprite");
         // Why the hell there is a "jog" animation?! JUST GO INTO RUNNING
         // ALREADY SEGA, YOU SURE HAVEN'T DONE THAT IN A WHILE.
-        t.addTab("Jog", null, createSpritePanel(name, "Jog", offset + (64 * 2 * 64) + (64 * 16), 8 * 4),
+        t.addTab("Jog", null, createSpritePanel(name, "Jog", 
+                offset + (64 * 2 * 64) + (64 * 16), 8 * 4),
                 "Edit " + name + " Jog Sprite");
-        t.addTab("Run", null, createSpritePanel(name, "Run", offset + (64 * 3 * 64) + (64 * 24), 32 * 10),
+        t.addTab("Run", null, createSpritePanel(name, "Run", 
+                offset + (64 * 3 * 64) + (64 * 24), 32 * 10),
                 "Edit " + name + " Run Sprite");
-        t.addTab("Halt", null, createSpritePanel(name, "Run", offset + (64 * 5 * 64) + (64*12), 32 * 8),
+        t.addTab("Halt", null, createSpritePanel(name, "Halt", 
+                offset + (64 * 5 * 64) + (64 * 40), 32 * 5),
                 "Edit " + name + " Halt Sprite");
+        t.addTab("Dash", null, createSpritePanel(name, "Dash", 
+                offset + (64 * 6 * 64) + (64 * 48), 32 * 9),
+                "Edit " + name + " Dash Sprite");
+        t.addTab("Turn", null, createSpritePanel(name, "Turn", 
+                offset + (64 * 9 * 64), 32 * 4),
+                "Edit " + name + " Turn Sprite");
+        t.addTab("Change Direction", null, createSpritePanel(name, "Change Direction",
+                offset + (64 * 10 * 64) + (64 * 8), 32 * 5),
+                "Edit " + name + " Change Direction Sprite");
+        t.addTab("Fall", null, createSpritePanel(name, "Fall",
+                offset + (64 * 11 * 64) + (64 * 16), 32 * 5),
+                "Edit " + name + " Fall Sprite");
+        t.addTab("Jump", null, createSpritePanel(name, "Jump",
+                offset + (64 * 12 * 64) + (64 * 24), 32 * 6),
+                "Edit " + name + " Jump Sprite");
         pane.addTab(name, null, t, "Edit " + name + " Sprite");
     }
 

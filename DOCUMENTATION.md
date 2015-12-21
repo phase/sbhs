@@ -224,18 +224,21 @@ ________
 _1______
 ```
 
-####Animation Frames
+####Animations
 Each animation has a certain number of frames
 (listed in order of appearance in ROM).
 
-| Animation  | Frames |
-|------------|--------|
-| Idle       | 6      |
-| Jog        | 1      |
-| Running    | 8      |
-| Halt       | 4      |
-| Dash       | 7      |
-| Turning    | 3      |
+| Animation         | Frames |
+|-------------------|--------|
+| Idle              | 6      |
+| Jog               | 1      |
+| Run               | 8      |
+| Halt              | 4      |
+| Dash              | 7      |
+| Turn              | 3      |
+| Change Direction  | 4      |
+| Fall              | 4      |
+| Jump              | 5      |
 
 ####Ground Shadow
 The ground shadow (the shadow that displays underneath every

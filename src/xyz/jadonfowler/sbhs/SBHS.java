@@ -65,7 +65,7 @@ public class SBHS {
             // About Page
             JTextPane t = new JTextPane();
             t.setText("Sonic Battle Hack Suite " + VERSION + " was made by Phase.\n"
-                    + "You can find the source at https://github.com/phase/sbhs");
+                    + "You can find the source at https://github.com/phase/sbhax");
             t.setEditable(false);
             mainTabs.addTab("About", null, t, "About Page");
         }
