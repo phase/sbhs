@@ -44,16 +44,22 @@ public class SpriteManager {
             int v = SBHS.raf.read();
             String value = SBHS.reverse((v < 0x10 ? "0" : "") + Integer.toString(v, 16));
             Color o1 = Color.black, o2 = Color.white;
+            //System.out.print(value + " : ");
             int v1 = Integer.parseInt(value.toCharArray()[0] + "", 16);
             int v2 = Integer.parseInt(value.toCharArray()[1] + "", 16);
+            //System.out.println(v1 + " " + v2);
             try {
                 //printPalette(PaletteManager.PALETTES.get(name));
-                o1 = GBAColor.fromGBA(PaletteManager.PALETTES.get(name)[v1]);
-                o2 = GBAColor.fromGBA(PaletteManager.PALETTES.get(name)[v2]);
+                String s1 = PaletteManager.PALETTES.get(name)[v1];
+                if (s1 == null) s1 = "0000";
+                o1 = GBAColor.fromGBA(s1);
+                String s2 = PaletteManager.PALETTES.get(name)[v2];
+                if (s2 == null) s2 = "0000";
+                o2 = GBAColor.fromGBA(s2);
             }
             catch (Exception e) {
-                System.exit(-1);
                 e.printStackTrace();
+                System.exit(-1);
             }
             int col1 = o1.getRGB();
             int col2 = o2.getRGB();
@@ -236,7 +242,7 @@ public class SpriteManager {
         return c;
     }
 
-    private static void printPalette(String[] s) {
+    public static void printPalette(String[] s) {
         System.out.print("[");
         for (int i = 0; i < s.length; i++) {
             System.out.print(s[i] + "(");

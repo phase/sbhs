@@ -15,6 +15,7 @@ public class SBHS {
     public static final int WIDTH = 700, HEIGHT = 600;
 
     public static void main(String[] args) throws Exception {
+        System.out.println("SBHS");
         // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(WIDTH, HEIGHT);
@@ -108,7 +109,7 @@ public class SBHS {
     }
 
     public static String hex(int i) {
-        return (i < 10 ? "0" : "") + Integer.toHexString(i);
+        return (i < 0x10 ? "0" : "") + Integer.toHexString(i);
     }
 
     public static String reverse(String s) {

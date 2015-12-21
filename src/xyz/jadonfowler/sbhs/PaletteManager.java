@@ -34,22 +34,26 @@ public class PaletteManager {
      * "sonic" -> ["23452345", "23452345", ...]
      */
     public static HashMap<String, String[]> PALETTES = new HashMap<String, String[]>();
-
+    public static HashMap<String, Integer> PALETTE_OFFSET = new HashMap<String, Integer>();
+    
     public static void addPaletteTab(JTabbedPane pane, String name, int offset) throws Exception {
         pane.addTab(name, null, createPalettePanel(name, offset), "Edit " + name + " Palette");
     }
 
     public static JPanel createPalettePanel(String name, int hex) throws Exception {
+        PALETTE_OFFSET.put(name, hex);
         String[] colors = new String[16];
         int color = 0;
         String f = "";
         for (int i = hex; i <= hex + 32; i++) {
             SBHS.raf.seek(i);
             int value = SBHS.raf.read();
+            //System.out.println(value + " " + f);
             // System.out.print(Integer.toHexString(value));
             if (f.length() == 4) {
                 f = f.split("(?<=\\G.{2})")[1] + f.split("(?<=\\G.{2})")[0];
                 colors[color++] = f;
+                //System.out.println("@"+i + " " + color + " "+f);
                 f = SBHS.hex(value);
             }
             else {
@@ -57,6 +61,7 @@ public class PaletteManager {
             }
         }
         PALETTES.put(name, colors);
+        //SpriteManager.printPalette(PALETTES.get(name));
         if (name.equals("Sonic")){
             String[] shadowColors = (String[]) Arrays.asList(colors).toArray();
             shadowColors[0] = GBAColor.toGBA(Color.white);
@@ -105,14 +110,27 @@ public class PaletteManager {
                 JFileChooser fc = new JFileChooser();
                 if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
                     try {
-                        String[] colors = new String[16];
                         BufferedImage img = ImageIO.read(fc.getSelectedFile());
                         for(int x = 0; x < 16; x++) {
                             Color c = new Color(img.getRGB(x, 0));
+                            System.out.println("Upload-color: " + GBAColor.toGBA(c));
                             colors[x] = GBAColor.toGBA(c);
+                            try {
+                                int h1 = Integer.parseInt(colors[x].split("(?<=\\G.{2})")[0], 16);
+                                int h2 = Integer.parseInt(colors[x].split("(?<=\\G.{2})")[1], 16);
+                                SBHS.raf.seek(hex + (x * 2));
+                                SBHS.raf.write(h2);
+                                SBHS.raf.seek(hex + (x * 2) + 1);
+                                SBHS.raf.write(h1);
+                            }
+                            catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
+                        SpriteManager.printPalette(PALETTES.get(name));
                         PALETTES.remove(name);
                         PALETTES.put(name, colors);
+                        SpriteManager.printPalette(PALETTES.get(name));
                     }
                     catch (IOException x) {
                         x.printStackTrace();
