@@ -9,17 +9,18 @@ import javax.swing.*;
  */
 public class SBHS {
     public static final String VERSION = "1.1";
-    public static String gameLocation = "res/sonic.gba";
+    public static String gameLocation = "";
     public static RandomAccessFile raf;
     public static JFrame frame;
     public static final int WIDTH = 700, HEIGHT = 600;
 
     public static void main(String[] args) throws Exception {
-        // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(WIDTH, HEIGHT);
         frame.setResizable(true);
-        // gameLocation = getFile();
+        frame.setIconImage(new ImageIcon(SBHS.class.getResource("/icon.png")).getImage());
+        gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTabbedPane mainTabs = new JTabbedPane();
@@ -43,15 +44,13 @@ public class SBHS {
             // TODO Text editor
             JTabbedPane textTabs = new JTabbedPane();
             TextManager.addTextTab(textTabs, "Sonic", 0x1DB3FC, 0x1E1467);
-            /*
-             * TextManager.addTextTab(textTabs, "Tails", 0x1E146A, 0x1E6FA7);
-             * TextManager.addTextTab(textTabs, "Rouge", 0x1E6FA8, 0x1ED2C3);
-             * TextManager.addTextTab(textTabs, "Knuckles", 0x1ED2C4, 0x1F417F);
-             * TextManager.addTextTab(textTabs, "Amy", 0x1F4180, 0x1F9CDB);
-             * TextManager.addTextTab(textTabs, "Cream", 0x1F9CDC, 0x1FE86F);
-             * TextManager.addTextTab(textTabs, "Shadow", 0x1FE870, 0x206103);
-             * TextManager.addTextTab(textTabs, "Emerl", 0x206104, 0x20B131);
-             */
+            TextManager.addTextTab(textTabs, "Tails", 0x1E146A, 0x1E6FA7);
+            TextManager.addTextTab(textTabs, "Rouge", 0x1E6FA8, 0x1ED2C3);
+            TextManager.addTextTab(textTabs, "Knuckles", 0x1ED2C4, 0x1F417F);
+            TextManager.addTextTab(textTabs, "Amy", 0x1F4180, 0x1F9CDB);
+            TextManager.addTextTab(textTabs, "Cream", 0x1F9CDC, 0x1FE86F);
+            TextManager.addTextTab(textTabs, "Shadow", 0x1FE870, 0x206103);
+            TextManager.addTextTab(textTabs, "Emerl", 0x206104, 0x20B131);
             mainTabs.addTab("Text Editor", null, textTabs, "Text Editor");
         }
         {

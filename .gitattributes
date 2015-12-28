@@ -1,1 +1,9 @@
+# Language Settings
 *.patch linguist-language=Assembly
+
+# File endings
+* text=lf
+
+# Binaries
+*.png binary
+*.gba binary
