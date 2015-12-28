@@ -23,6 +23,7 @@ public class SpriteManager {
     };
 
     public static void addCharacterSpriteTab(JTabbedPane pane, String name, int offset) throws Exception {
+        //@formatter:off
         JTabbedPane t = new JTabbedPane();
         // When I try to condense the equations into numbers, I get weird
         // errors. Probably has to do with the fact that SEGA is so idiotic that
@@ -31,35 +32,57 @@ public class SpriteManager {
         // noticed that not all of them had it, which makes me confused as
         // to why they were there to begin with. Thank you SEGA, for making
         // a game more confusing that Minecraft's protocol.
-        t.addTab("Idle", null, createSpritePanel(name, "Idle", offset, 32 * 8), 
+        t.addTab("Idle", null, createSpritePanel(name, "Idle", //6
+                offset, 32 * 7 - 8), 
                 "Edit " + name + " Idle Sprite");
         // Why the hell there is a "jog" animation?! JUST GO INTO RUNNING
         // ALREADY SEGA, YOU SURE HAVEN'T DONE THAT IN A WHILE.
-        t.addTab("Jog", null, createSpritePanel(name, "Jog", 
-                offset + (64 * 2 * 64) + (64 * 16), 8 * 4),
+        t.addTab("Jog", null, createSpritePanel(name, "Jog", //1
+                offset + (64 * 2 * 64) + (64 * 16), 32),
                 "Edit " + name + " Jog Sprite");
-        t.addTab("Run", null, createSpritePanel(name, "Run", 
-                offset + (64 * 3 * 64) + (64 * 24), 32 * 10),
+        t.addTab("Run", null, createSpritePanel(name, "Run", //8
+                offset + (64 * 3 * 64) + (64 * 24), 32 * 9),
                 "Edit " + name + " Run Sprite");
-        t.addTab("Halt", null, createSpritePanel(name, "Halt", 
-                offset + (64 * 5 * 64) + (64 * 40), 32 * 5),
+        t.addTab("Halt", null, createSpritePanel(name, "Halt", //4
+                offset + (64 * 5 * 64) + (64 * 40), 32 * 4 + 16),
                 "Edit " + name + " Halt Sprite");
-        t.addTab("Dash", null, createSpritePanel(name, "Dash", 
-                offset + (64 * 6 * 64) + (64 * 48), 32 * 9),
+        t.addTab("Dash", null, createSpritePanel(name, "Dash", //7
+                offset + (64 * 6 * 64) + (64 * 48), 32 * 8),
                 "Edit " + name + " Dash Sprite");
-        t.addTab("Turn", null, createSpritePanel(name, "Turn", 
-                offset + (64 * 9 * 64), 32 * 4),
+        t.addTab("Turn", null, createSpritePanel(name, "Turn", //3
+                offset + (64 * 9 * 64), 32 * 4 - 16),
                 "Edit " + name + " Turn Sprite");
-        t.addTab("Change Direction", null, createSpritePanel(name, "Change Direction",
-                offset + (64 * 10 * 64) + (64 * 8), 32 * 5),
+        t.addTab("Change Direction", null, createSpritePanel(name, "Change Direction", //4
+                offset + (64 * 10 * 64) + (64 * 8), 32 * 5 - 16),
                 "Edit " + name + " Change Direction Sprite");
-        t.addTab("Fall", null, createSpritePanel(name, "Fall",
-                offset + (64 * 11 * 64) + (64 * 16), 32 * 5),
+        t.addTab("Fall", null, createSpritePanel(name, "Fall", //4
+                offset + (64 * 11 * 64) + (64 * 16), 32 * 5 - 16),
                 "Edit " + name + " Fall Sprite");
-        t.addTab("Jump", null, createSpritePanel(name, "Jump",
-                offset + (64 * 12 * 64) + (64 * 24), 32 * 6),
+        t.addTab("Jump", null, createSpritePanel(name, "Jump", //5
+                offset + (64 * 12 * 64) + (64 * 24), 32 * 6 - 16),
                 "Edit " + name + " Jump Sprite");
+        t.addTab("Land", null, createSpritePanel(name, "Land",
+                offset + (64 * 14 * 64) + (64 * 38), 32 * 4 - 16), //3
+                "Edit " + name + " Land Sprite");
+        t.addTab("Double Jump", null, createSpritePanel(name, "Double Jump",
+                offset + (64 * 15 * 64) + (64 * 48), 32 * 8), //7
+                "Edit " + name + " Double Jump");
+        // These are the normal `B` attacks
+        t.addTab("Attack", null, createSpritePanel(name, "Attack 1",
+                offset + (64 * 18 * 64), 32 * 7 - 8), //6
+                "Edit " + name + " Attack 1");
+        t.addTab("Attack 2", null, createSpritePanel(name, "Attack 2",
+                offset + (64 * 20 * 64) + (64 * 16), 32 * 7 - 8), //6
+                "Edit " + name + " Attack 2");
+        t.addTab("Attack 3", null, createSpritePanel(name, "Attack 3",
+                offset + (64 * 22 * 64) + (64 * 32), 32 * 8 - 4), //7
+                "Edit " + name + " Attack 3");
+        t.addTab("Attack 4", null, createSpritePanel(name, "Attack 4",
+                /* This one is a little weird */
+                offset + (64 * 24 * 64) + (64 * 28), 32 * 20), //18
+                "Edit " + name + " Attack 4");
         pane.addTab(name, null, t, "Edit " + name + " Sprite");
+        //@formatter:on
     }
 
     public static void addSpriteTab(JTabbedPane pane, String name, int offset, int amount) throws Exception {
@@ -276,7 +299,7 @@ public class SpriteManager {
         return c;
     }
 
-    public static void printPalette(String[] s) {
+    protected static void printPalette(String[] s) {
         System.out.print("[");
         for (int i = 0; i < s.length; i++) {
             System.out.print(s[i] + "(");
@@ -285,7 +308,7 @@ public class SpriteManager {
         }
         System.out.println("]");
     }
-    
+
     public static int getIndexFromPalette(String name, Color color) {
         ArrayList<String> p = new ArrayList<String>(Arrays.asList(PaletteManager.PALETTES.get(name)));
         for (String s : p) {

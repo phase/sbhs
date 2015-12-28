@@ -9,18 +9,19 @@ import javax.swing.*;
  */
 public class SBHS {
     public static final String VERSION = "1.1";
-    public static String gameLocation = "";
+    public static String gameLocation = "C:/Users/phase/Desktop/priv/sonicbattle/tailsdoll/sonic.gba";
     public static RandomAccessFile raf;
     public static JFrame frame;
-    public static final int WIDTH = 700, HEIGHT = 600;
+    public static final int WIDTH = 800, HEIGHT = 800;
 
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(WIDTH, HEIGHT);
         frame.setResizable(true);
+        frame.setLocationRelativeTo(null);
         frame.setIconImage(new ImageIcon(SBHS.class.getResource("/icon.png")).getImage());
-        gameLocation = getFile();
+        //gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JTabbedPane mainTabs = new JTabbedPane();

@@ -239,6 +239,11 @@ Each animation has a certain number of frames
 | Change Direction  | 4      |
 | Fall              | 4      |
 | Jump              | 5      |
+| Land              | 3      |
+| Double Jump       | 7      |
+| Attack 1          | 6      |
+| Attack 2          | 6      |
+| Attack 3          | 7      |
 
 ####Ground Shadow
 The ground shadow (the shadow that displays underneath every
