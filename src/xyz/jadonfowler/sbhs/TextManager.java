@@ -12,6 +12,8 @@ public class TextManager {
         // TODO
         // System.out.println(name);
         JTextArea textArea = new JTextArea(100, 50);
+        textArea.setRows(40);
+        textArea.setColumns(70);
         /*
          * JScrollPane scroll = new JScrollPane(textArea,
          * JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -69,7 +71,7 @@ public class TextManager {
         });
         // p.add(write);
         JScrollPane sp = new JScrollPane(textArea);
-        sp.setBounds(23, 3, 394, 20);
+       // sp.setBounds(23, 3, 394, 20);
         JPanel bp = new JPanel();
         bp.add(write);
         JPanel globalPanel = new JPanel();

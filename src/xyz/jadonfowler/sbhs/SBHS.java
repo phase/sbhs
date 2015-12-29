@@ -12,14 +12,15 @@ public class SBHS {
     public static String gameLocation = "C:/Users/phase/Desktop/priv/sonicbattle/tailsdoll/sonic.gba";
     public static RandomAccessFile raf;
     public static JFrame frame;
-    public static final int WIDTH = 800, HEIGHT = 800;
+    public static final int WIDTH = 1280, HEIGHT = 840;
 
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         frame = new JFrame("Sonic Battle Hack Suite " + VERSION + " - By Phase");
         frame.setSize(WIDTH, HEIGHT);
         frame.setResizable(true);
-        frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null); // Center of screen
+        frame.setExtendedState(Frame.MAXIMIZED_BOTH); // Full screen
         frame.setIconImage(new ImageIcon(SBHS.class.getResource("/icon.png")).getImage());
         //gameLocation = getFile();
         raf = new RandomAccessFile(gameLocation, "rw");
@@ -37,8 +38,12 @@ public class SBHS {
             PaletteManager.addPaletteTab(paletteTabs, "E-102", 0x681A78);
             PaletteManager.addPaletteTab(paletteTabs, "Chaos", 0x7336B8);
             PaletteManager.addPaletteTab(paletteTabs, "Emerl", 0x787CFA);
-            PaletteManager.addPaletteTab(paletteTabs, "Fake Emerl", 0x47AB78);
+            PaletteManager.addPaletteTab(paletteTabs, "Fake_Emerl", 0x47AB78);
             PaletteManager.addPaletteTab(paletteTabs, "Eggman", 0x7822D8);
+            PaletteManager.addPaletteTab(paletteTabs, "Dust_Cloud", 0xBF2058);
+            PaletteManager.addPaletteTab(paletteTabs, "Sonic's_Mine", 0xBF20D8);
+            PaletteManager.addPaletteTab(paletteTabs, "Tail's_Blaster", 0xBF2098);
+            PaletteManager.addPaletteTab(paletteTabs, "Shield", 0xBF2078);
             mainTabs.addTab("Palette Editor", null, paletteTabs, "Palette Editor");
         }
         {

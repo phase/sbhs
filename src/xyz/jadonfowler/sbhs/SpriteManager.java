@@ -9,21 +9,11 @@ import javax.imageio.*;
 import javax.swing.*;
 
 public class SpriteManager {
-    public static HashMap<String, HashMap<String, BufferedImage>> SPRITES = new HashMap<String, HashMap<String, BufferedImage>>() {
-        private static final long serialVersionUID = 1L;
-
-        {
-            put("Ground Shadow", new HashMap<String, BufferedImage>());
-            put("Sonic", new HashMap<String, BufferedImage>());
-            put("Knuckles", new HashMap<String, BufferedImage>());
-            put("Tails", new HashMap<String, BufferedImage>());
-            put("Amy", new HashMap<String, BufferedImage>());
-            // TODO finish
-        }
-    };
+    public static HashMap<String, HashMap<String, BufferedImage>> SPRITES = new HashMap<String, HashMap<String, BufferedImage>>();
 
     public static void addCharacterSpriteTab(JTabbedPane pane, String name, int offset) throws Exception {
         //@formatter:off
+        SPRITES.put(name, new HashMap<String, BufferedImage>());
         JTabbedPane t = new JTabbedPane();
         // When I try to condense the equations into numbers, I get weird
         // errors. Probably has to do with the fact that SEGA is so idiotic that
@@ -77,15 +67,20 @@ public class SpriteManager {
         t.addTab("Attack 3", null, createSpritePanel(name, "Attack 3",
                 offset + (64 * 22 * 64) + (64 * 32), 32 * 8 - 4), //7
                 "Edit " + name + " Attack 3");
-        t.addTab("Attack 4", null, createSpritePanel(name, "Attack 4",
+        t.addTab("Big Attack", null, createSpritePanel(name, "Big Attack",
                 /* This one is a little weird */
-                offset + (64 * 24 * 64) + (64 * 28), 32 * 20), //18
-                "Edit " + name + " Attack 4");
+                offset + (64 * 24 * 64) + (64 * 28), 32 * 19 + 8), //17
+                "Edit " + name + " Big Attack");
+        // When you press the direction away from where you're pointing and B
+        t.addTab("Back Attack", null, createSpritePanel(name, "Back Attack",
+                offset + (64 * 29 * 64) + (64 * 16), 32 * 10), //9
+                "Edit " + name + " Back Attack");
         pane.addTab(name, null, t, "Edit " + name + " Sprite");
         //@formatter:on
     }
 
     public static void addSpriteTab(JTabbedPane pane, String name, int offset, int amount) throws Exception {
+        SPRITES.put(name, new HashMap<String, BufferedImage>());
         pane.addTab(name, null, createSpritePanel(name, "Idle", offset, amount), "Edit " + name + " Sprite");
     }
 
@@ -202,7 +197,7 @@ public class SpriteManager {
         });
         JPanel jp = new JPanel();
         int h = (int) Math.ceil(amount / 4);
-        int sw = 200 / h * 12;
+        int sw = 200 / h * 16;
         int sh = SBHS.frame.getHeight() - 64;
         ImageIcon spriteSheet = new ImageIcon(scale(img, sw, sh));
         jp.add(write);
