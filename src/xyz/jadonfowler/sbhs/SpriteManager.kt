@@ -6,6 +6,8 @@ import java.io.*
 import java.util.*
 import javax.imageio.*
 import javax.swing.*
+import javax.swing.BoxLayout
+
 
 object SpriteManager {
     var SPRITES = HashMap<String, HashMap<String, BufferedImage>>()
@@ -190,14 +192,22 @@ object SpriteManager {
             }
         }
         val jp = JPanel()
-        val h = Math.ceil((amount / 4).toDouble()).toInt()
-        val sw = 200 / h * 16
-        val sh = SBHS.frame.height - 64
+        val sw = ((SBHS.frame.width - 64) * 0.5).toInt()
+        val sh = (sw * img.height) / img.width
         val spriteSheet = ImageIcon(scale(img, sw, sh))
-        jp.add(write)
-        jp.add(save)
-        jp.add(upload)
-        jp.add(JLabel(spriteSheet))
+
+        val buttons = JPanel()
+        buttons.layout = BoxLayout(buttons, BoxLayout.Y_AXIS)
+        buttons.add(write)
+        buttons.add(save)
+        buttons.add(upload)
+        jp.add(buttons)
+
+        val spriteLabel = JLabel(spriteSheet)
+        val scrollPane = ScrollPane()
+        scrollPane.setBounds(0, 0, (SBHS.frame.width * 0.9).toInt(), (SBHS.frame.height * 0.9).toInt())
+        scrollPane.add(spriteLabel)
+        jp.add(scrollPane)
         return jp
     }
 
