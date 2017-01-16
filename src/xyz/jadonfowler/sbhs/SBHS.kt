@@ -69,7 +69,7 @@ object SBHS {
         run {
             // Sprite Editor
             val spriteTabs = JTabbedPane()
-            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 32)
+            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
             SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47B078)
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
         }
@@ -77,7 +77,7 @@ object SBHS {
             // About Page
             val t = JTextPane()
             t.text = "Sonic Battle Hack Suite $VERSION was made by Phase.\n" +
-                    "You can find the source at https://github.com/phase/sbhax"
+                    "You can find the source at https://github.com/phase/sbhs"
             t.isEditable = false
             mainTabs.addTab("About", null, t, "About Page")
         }
@@ -125,10 +125,6 @@ object SBHS {
 
     fun hex(i: Int): String {
         return (if (i < 0x10) "0" else "") + Integer.toHexString(i)
-    }
-
-    fun reverse(s: String): String {
-        return StringBuilder().append(s).reverse().toString()
     }
 
     fun spaceout(s: String): String {

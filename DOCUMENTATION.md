@@ -224,6 +224,17 @@ ________
 _1______
 ```
 
+Sprite sections are ordered in a weird way. Character sprites are 6x6 sections.
+
+```
+0123 OP
+4567 QR
+89AB ST
+CDEF UV
+GHIJ WX
+KLMN YZ
+```
+
 ####Animations
 Each animation has a certain number of frames
 (listed in order of appearance in ROM).
