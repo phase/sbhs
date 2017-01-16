@@ -5,31 +5,20 @@ import java.awt.Color
 object GBAColor {
     fun fromGBA(hex: String): Color {
         assert(hex.length == 4) { "Woah! This string isn't 4 characters wide!" }
-        var h = Integer.parseInt(hex, 16)
-        var g = 0
-        var b = 0
-        while (h - 4 * 256 >= 0) {
-            b += 8
-            h -= 4 * 256
-        }
-        while (h - 32 >= 0) {
-            g += 8
-            h -= 32
-        }
-        var r = h * 8
-        val t = 255
-        r = if (r > t) t else r
-        g = if (g > t) t else g
-        b = if (b > t) t else b
+        val bits = Integer.toBinaryString(Integer.parseInt(hex, 16)).padStart(16, '0')
+        val b = Math.min(255, Integer.parseInt(bits.substring(1..5), 2) * 8 * (24 / 15))
+        val g = Math.min(255, Integer.parseInt(bits.substring(6..10), 2) * 8 * (24 / 15))
+        val r = Math.min(255, Integer.parseInt(bits.substring(11..15), 2) * 8 * (24 / 15))
         val c = Color(r, g, b)
         return c
     }
 
     fun toGBA(r: Int, g: Int, b: Int): String {
-        val dr = r / 8
-        val dg = g * 4
-        val db = b * 128
-        val i = dr + dg + db
+        val dr = Math.min(31, Math.ceil(r / 8.0).toInt())
+        val dg = Math.min(31, Math.ceil(g / 8.0).toInt())
+        val db = Math.min(31, Math.ceil(b / 8.0).toInt())
+        val i = Math.min(0x7FFF, (dr * 4 * 256) + (dg * 2 * 16) + db)
+
         return (if (i < Math.pow(16.0, 3.0)) "0" else "") +
                 (if (i < 256) "0" else "") +
                 (if (i < 16) "0" else "") +
@@ -48,5 +37,4 @@ object GBAColor {
         i[1] = Integer.parseInt(c[2] + "" + c[3], 16)
         return i
     }
-
 }
