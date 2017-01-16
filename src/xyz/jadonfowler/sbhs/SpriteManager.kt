@@ -221,62 +221,109 @@ object SpriteManager {
 
     /**
      * Writes uncompressed sprite to ROM
-     * @param img Image to write
-     * *
+     *
      * @param offset Offset of image in ROM
      * *
-     * @param amount Amount of 8x8 squares
+     * @param frames Amount of frames
      */
-    fun writeImage(name: String, state: String, offset: Int, amount: Int) {
-        val img = SPRITES[name]?.get(state)
+    fun writeImage(name: String, state: String, offset: Int, frames: Int, size: Int = 6) {
+        val img = SPRITES[name]?.get(state) ?: throw Exception("Null Image for $name/$state")
         printPalette(PaletteManager.PALETTES[name]!!)
-        var x = 1
-        var y = 1
-        var s = 0
-        var i = offset
-        val size = 4
-        val rows = 8
-        while (i < offset + size * rows * amount) {
-            val c1 = getColorFromImage(img!!, x - 1, y - 1)
-            // This gets the index of the color in the palette,
-            // which is the value we need to write to the ROM
-            //System.out.println("Palette contains " + c1 + ": " + Arrays.asList(PaletteManager.PALETTES.get(name)).contains(c1));
-            val v1 = getIndexFromPalette(name, c1)
-            x++
-            val c2 = getColorFromImage(img, x - 1, y - 1)
-            if (x != 0 && x % 8 == 0) {
-                x -= 8
-                if (y != 0 && y % 8 == 0) {
-                    y -= 8
-                    x += 8
-                    s++
-                    if (s == 4) {
-                        s = 0
-                        x = 0
-                        y += 8
+
+        var currentFrame = 0
+        while (currentFrame < frames) {
+            val sections = Array(size * size, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
+
+            var sy = 0
+            while (sy < size) {
+                var sx = 0
+                while (sx < size) {
+                    var y = 0
+                    while (y < 8) {
+                        var x = 0
+                        while (x < 8) {
+                            val color = Color(img.getRGB(sx * 8 + x, currentFrame * size * 8 + sy * 8 + y))
+                            val value = getIndexFromPalette(name, color)
+                            println("cf: $currentFrame sx: $sx sy: $sy size: $size | ${sx + sy * size} -> ($x, $y) : $value : $color")
+                            sections[sx + sy * size].values[y][x] = value
+                            x++
+                        }
+                        y++
                     }
+                    sx++
                 }
-                y++
-            }
-            x++
-            //System.out.println("Palette contains " + c2 + ": " + Arrays.asList(PaletteManager.PALETTES.get(name)).contains(c2));
-            val v2 = getIndexFromPalette(name, c2)
-            // Writing to ROM
-            //            if (v1 < 0) v1 = 0;
-            //            if (v2 < 0) v2 = 0;
-            val v = Integer.parseInt(Integer.toString(v2, 16) + "" + Integer.toString(v1, 16), 16)
-            try {
-                SBHS.raf.seek(i.toLong())
-                SBHS.raf.write(v)
-                println("Colors: " + c1 + " " + c2 + " Wrote: " + Integer.toString(v, 16) + " @ 0x"
-                        + Integer.toString(i, 16))
-            } catch (e: IOException) {
-                e.printStackTrace()
+                sy++
             }
 
-            i++
+            println("Sections of frame $currentFrame: ")
+            sections.forEach {
+                println(Arrays.deepToString(it.values))
+            }
+
+            /**
+            0123OP  012345  00 01 02 03  04 05
+            4567QR  6789AB  06 07 08 09  10 11
+            89ABST  CDEFGH  12 13 14 15  16 17
+            CDEFUV  IJKLMN  18 19 20 21  22 23
+            GHIJWX  OPQRST  24 25 26 27  28 29
+            KLMNYZ  UVWXYZ  30 31 32 33  34 35
+
+            0, 1, 2, 3,
+            6, 7, 8, 9,
+            12, 13, 14, 15,
+            18, 19, 20, 21,
+            24, 25, 26, 27,
+            30, 31, 32, 33,
+            4, 5, 10, 11,
+            16, 17, 22, 23,
+            28, 29, 34, 35
+             */
+            val sortedSections = arrayOf(
+                    sections[0], sections[1], sections[2], sections[3],
+                    sections[6], sections[7], sections[8], sections[9],
+                    sections[12], sections[13], sections[14], sections[15],
+                    sections[18], sections[19], sections[20], sections[21],
+                    sections[24], sections[25], sections[26], sections[27],
+                    sections[30], sections[31], sections[32], sections[33],
+                    sections[4], sections[5], sections[10], sections[11],
+                    sections[16], sections[17], sections[22], sections[23],
+                    sections[28], sections[29], sections[34], sections[35]
+            )
+
+            fun <T> Array<Array<T>>.f(): List<T> {
+                val m = mutableListOf<T>()
+                this.forEach { m.addAll(it) }
+                return m
+            }
+
+            val valuesToWrite = mutableListOf<Int>()
+            sortedSections.forEachIndexed { s, spriteSection ->
+                val values = spriteSection.values.f().map { Integer.toHexString(it) }
+                val appendedValues = mutableListOf<Int>()
+
+                var i = 0
+                while (i < values.size) {
+                    val v1 = values[i]
+                    val v2 = values[i + 1]
+                    val v = try {
+                        Integer.parseInt(v2 + "" + v1, 16)
+                    } catch(e: Exception) {
+                        0
+                    }
+                    appendedValues.add(v)
+                    i += 2
+                }
+
+                valuesToWrite.addAll(appendedValues)
+            }
+
+            valuesToWrite.forEachIndexed { i, value ->
+                SBHS.raf.seek(offset + (currentFrame * size * size * 32) + i.toLong())
+                SBHS.raf.write(value)
+            }
+
+            currentFrame++
         }
-        printPalette(PaletteManager.PALETTES[name]!!)
     }
 
     /**
@@ -342,7 +389,8 @@ object SpriteManager {
             val pc = GBAColor.fromGBA(s)
             if (pc == color) return i
         }
-        print("Error finding color " + color)
+        print("Error finding color $color ")
+        printPalette(PaletteManager.PALETTES[name]!!)
         return 0
     }
 }
