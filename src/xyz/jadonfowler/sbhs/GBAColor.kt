@@ -17,7 +17,7 @@ object GBAColor {
         val dr = Math.min(31, Math.ceil(r / 8.0).toInt())
         val dg = Math.min(31, Math.ceil(g / 8.0).toInt())
         val db = Math.min(31, Math.ceil(b / 8.0).toInt())
-        val i = Math.min(0x7FFF, (dr * 4 * 256) + (dg * 2 * 16) + db)
+        val i = Math.min(0x7FFF, (db * 4 * 256) + (dg * 2 * 16) + dr)
 
         return (if (i < Math.pow(16.0, 3.0)) "0" else "") +
                 (if (i < 256) "0" else "") +
