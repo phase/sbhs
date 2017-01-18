@@ -992,7 +992,7 @@ Workshop. This is especially true for Sonic
 Battle. These are steps that will let you do some radical stuff with VBA
 too for any game compatible with it:
 
-1.  Open up the respective viewer and get the offset of the data
+1.  Open up the respective viewer and get the offset of the spriteData
     you want.
 2.  Open up the Memory Viewer and go to that offset.
 3.  Take notes on the format and experiment with it.

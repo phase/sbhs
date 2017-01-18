@@ -70,7 +70,7 @@ object SBHS {
             // Sprite Editor
             val spriteTabs = JTabbedPane()
             SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47B078)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47AFD8)
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
         }
         run {
