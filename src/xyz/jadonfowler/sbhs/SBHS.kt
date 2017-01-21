@@ -8,7 +8,7 @@ import javax.swing.*
  * @author https://github.com/phase
  */
 object SBHS {
-    val VERSION = "1.2-SNAPSHOT"
+    val VERSION = "1.2"
     var gameLocation = ""
     var raf: RandomAccessFile = RandomAccessFile("/dev/null", "r")
     var frame: JFrame = JFrame("Sonic Battle Hack Suite $VERSION - By Phase")
