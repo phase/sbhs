@@ -30,7 +30,12 @@ object SBHS {
         if (config.exists() && config.isFile)
             gameLocation = config.readText()
         else gameLocation = getFile()
-        raf = RandomAccessFile(gameLocation, "rw")
+        try {
+            raf = RandomAccessFile(gameLocation, "rw")
+        } catch(e: Exception) {
+            e.printStackTrace()
+            System.exit(-1)
+        }
 
         val mainTabs = JTabbedPane()
         run {

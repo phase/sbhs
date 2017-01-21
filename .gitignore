@@ -13,6 +13,7 @@
 
 #Gradle
 /.gradle
+/build/
 
 #GBA
 *.gba
