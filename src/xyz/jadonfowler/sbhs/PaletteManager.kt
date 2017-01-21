@@ -43,7 +43,8 @@ object PaletteManager {
             //System.out.println(value + " " + f);
             // System.out.print(Integer.toHexString(value));
             if (f.length == 4) {
-                f = f.split("(?<=\\G.{2})".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[1] + f.split("(?<=\\G.{2})".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0]
+                f = f.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()[1] +
+                        f.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()[0]
                 colors[color++] = f
                 //System.out.println("@"+i + " " + color + " "+f);
                 f = SBHS.hex(value)

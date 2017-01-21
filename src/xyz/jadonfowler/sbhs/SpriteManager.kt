@@ -213,7 +213,7 @@ object SpriteManager {
 
         SPRITES[name] = img
         val write = JButton("Write to ROM")
-        write.addActionListener { writeImage(name, spriteData, maxFrames) }
+        write.addActionListener { writeImage(name, spriteData); println("Done writing to $name.") }
         val save = JButton("Save sprites")
         save.addActionListener {
             println("Saving Image: $name")
@@ -297,13 +297,17 @@ object SpriteManager {
                             while (x < 8) {
                                 val ix = sx * 8 + x + (8 * size * animationIndex)
                                 val iy = currentFrame * size * 8 + sy * 8 + y
-//                                print("i($ix,$iy)/(${img.width},${img.height});")
                                 sections[sx + sy * size].values[y][x] = try {
                                     val color = Color(img.getRGB(ix, iy))
-                                    val value = getIndexFromPalette(name, color)
-//                                println("cf: $currentFrame sx: $sx sy: $sy size: $size | ${sx + sy * size} -> ($x, $y) : $value : $color")
+                                    val value = palette.indexOf(color)
                                     value
                                 } catch(e: Exception) {
+                                    print("i($ix,$iy)/(${img.width},${img.height});")
+                                    println("sx * 8 + x = ${sx * 8 + x}")
+                                    println("sy * 8 + y = ${sy * 8 + y}")
+                                    println("cf: $currentFrame/$frames for $animationIndex sx: $sx sy: $sy size: $size | ${sx + sy * size} -> ($x, $y)")
+                                    e.printStackTrace()
+                                    System.exit(-1)
                                     0
                                 }
                                 x++
@@ -314,11 +318,6 @@ object SpriteManager {
                     }
                     sy++
                 }
-
-//                println("Sections of animation: $animationIndex, frame $currentFrame: ")
-//                sections.forEach {
-//                    println(Arrays.deepToString(it.values))
-//                }
 
                 /**
                 0123OP  012345  00 01 02 03  04 05
@@ -365,13 +364,7 @@ object SpriteManager {
                     while (i < values.size) {
                         val v1 = values[i]
                         val v2 = values[i + 1]
-                        val v = try {
-                            Integer.parseInt(v2 + v1, 16)
-                        } catch(e: Exception) {
-                            0
-                        }
-//                        if(v != 0)
-//                            println("${Integer.toHexString(v)} from $v2 + $v1")
+                        val v = Integer.parseInt(v2 + v1, 16)
                         appendedValues.add(v)
                         i += 2
                     }
@@ -383,7 +376,6 @@ object SpriteManager {
                     val o = offset + (currentFrame * size * size * 32) + i.toLong()
                     SBHS.raf.seek(o)
                     SBHS.raf.write(value)
-//                    print("w$value@$o;")
                 }
 
                 currentFrame++
