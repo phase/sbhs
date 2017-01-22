@@ -8,7 +8,7 @@ import javax.swing.*
  * @author https://github.com/phase
  */
 object SBHS {
-    val VERSION = "1.2.1-SNAPSHOT"
+    val VERSION = "1.2.1"
     var gameLocation = ""
     var raf: RandomAccessFile = RandomAccessFile("/dev/null", "r")
     var frame: JFrame = JFrame("Sonic Battle Hack Suite $VERSION - By Phase")
@@ -133,60 +133,12 @@ object SBHS {
         return (if (i < 0x10) "0" else "") + Integer.toHexString(i)
     }
 
-    fun spaceout(s: String): String {
-        var f = ""
-        for (c in s.toCharArray())
-            f += c + " "
-        return f
-    }
-
-    fun join(a: Array<String>): String {
-        /*
-         * String f = null; for (int i = 0; i < a.length; i++) { try{ String h =
-         * a[i], j = a[++i], k = a[++i], l = a[++i]; String g = join(join(h, j),
-         * join(k, l)); f = (f == null ? g : join(f, g)) + "\n";
-         * System.out.println(f+"\nn"); }catch(Exception e){ //less than 4
-         * elemnts left } }
-         */
-        var l: String? = null
-        var f: String? = null
-        for (s in a) {
-            if (l == null) {
-                l = s
-                continue
-            }
-            if (f == null) {
-                f = join(l, s)
-                l = null
-                continue
-            }
-            val k = join(l, s)
-            l = null
-            f = join(f, k)
-        }
-        return f ?: ""
-    }
-
     fun join(a: String, b: String): String {
         var f = ""
         val aa = a.split("\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
         val ba = b.split("\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
         for (i in aa.indices)
             f += aa[i] + ba[i] + "\n"
-        return f
-    }
-
-    fun getChar(d: String, x: Int, y: Int): Char {
-        val e = d.split("\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[y]
-        return e.toCharArray()[x]
-    }
-
-    fun atosHex(i: IntArray): String {
-        var f = "["
-        for (j in i) {
-            f += Integer.toHexString(j) + ", "
-        }
-        f += "]"
         return f
     }
 }
