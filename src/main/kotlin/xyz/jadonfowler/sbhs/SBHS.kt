@@ -8,7 +8,7 @@ import javax.swing.*
  * @author https://github.com/phase
  */
 object SBHS {
-    val VERSION = "1.2"
+    val VERSION = "1.2.1-SNAPSHOT"
     var gameLocation = ""
     var raf: RandomAccessFile = RandomAccessFile("/dev/null", "r")
     var frame: JFrame = JFrame("Sonic Battle Hack Suite $VERSION - By Phase")
@@ -76,7 +76,7 @@ object SBHS {
             val spriteTabs = JTabbedPane()
             // TODO: Add this back in
 //            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47AFD8)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47AFD8, 0x47AFB8)
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
         }
         run {

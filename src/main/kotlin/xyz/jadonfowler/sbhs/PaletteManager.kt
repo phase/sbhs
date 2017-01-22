@@ -108,8 +108,8 @@ object PaletteManager {
                         println("Upload-color: " + GBAColor.toGBA(c))
                         colors[x] = GBAColor.toGBA(c)
                         try {
-                            val h1 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()?.get(0), 16)
-                            val h2 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()?.get(1), 16)
+                            val h1 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()?.get(0), 16)
+                            val h2 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()?.get(1), 16)
                             SBHS.raf.seek((hex + x * 2).toLong())
                             SBHS.raf.write(h2)
                             SBHS.raf.seek((hex + x * 2 + 1).toLong())

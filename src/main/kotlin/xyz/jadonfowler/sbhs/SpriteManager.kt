@@ -27,93 +27,36 @@ object SpriteManager {
     var SPRITES = HashMap<String, BufferedImage>()
 
     @Throws(Exception::class)
-    fun addCharacterSpriteTab(pane: JTabbedPane, name: String, offset: Int) {
-
+    fun addCharacterSpriteTab(pane: JTabbedPane, name: String, spriteOffset: Int, paletteOffset: Int) {
         val spriteData = listOf(
                 // TODO: Convert these to single hex numbers
-                Tuple(offset, 6), // Idle 6
-                Tuple(offset + 64 * 2 * 64 + 64 * 16, 1), // Jog 1
-                Tuple(offset + 64 * 3 * 64 + 64 * 24, 8), // Run 8
-                Tuple(offset + 64 * 5 * 64 + 64 * 40, 4), // Halt 4
-                Tuple(offset + 64 * 6 * 64 + 64 * 48, 7), // Dash 7
-                Tuple(offset + 64 * 9 * 64, 3), // Turn 3
-                Tuple(offset + 64 * 10 * 64 + 64 * 8, 4), // Change Direction 4
-                Tuple(offset + 64 * 11 * 64 + 64 * 16, 4), // Fall 4
-                Tuple(offset + 64 * 12 * 64 + 64 * 24, 5), // Jump 5
-                Tuple(offset + 64 * 14 * 64 + 64 * 40, 3), // Land 3
-                Tuple(offset + 64 * 15 * 64 + 64 * 48, 7), // Double Jump 7
-                Tuple(offset + 64 * 18 * 64, 6), // Attack 1 6
-                Tuple(offset + 64 * 20 * 64 + 64 * 16, 6), // Attack 2 6
-                Tuple(offset + 64 * 22 * 64 + 64 * 32, 7), // Attack 3 7
-                Tuple(offset + 64 * 24 * 64 + 64 * 28 + 32 * 4, 17), // Big Attack 17
-                Tuple(offset + 64 * 29 * 64 + 64 * 16, 9) // Back Attack 9
+                Tuple(spriteOffset, 6), // Idle 6
+                Tuple(spriteOffset + 64 * 2 * 64 + 64 * 16, 1), // Jog 1
+                Tuple(spriteOffset + 64 * 3 * 64 + 64 * 24, 8), // Run 8
+                Tuple(spriteOffset + 64 * 5 * 64 + 64 * 40, 4), // Halt 4
+                Tuple(spriteOffset + 64 * 6 * 64 + 64 * 48, 7), // Dash 7
+                Tuple(spriteOffset + 64 * 9 * 64, 3), // Turn 3
+                Tuple(spriteOffset + 64 * 10 * 64 + 64 * 8, 4), // Change Direction 4
+                Tuple(spriteOffset + 64 * 11 * 64 + 64 * 16, 4), // Fall 4
+                Tuple(spriteOffset + 64 * 12 * 64 + 64 * 24, 5), // Jump 5
+                Tuple(spriteOffset + 64 * 14 * 64 + 64 * 40, 3), // Land 3
+                Tuple(spriteOffset + 64 * 15 * 64 + 64 * 48, 7), // Double Jump 7
+                Tuple(spriteOffset + 64 * 18 * 64, 6), // Attack 1 6
+                Tuple(spriteOffset + 64 * 20 * 64 + 64 * 16, 6), // Attack 2 6
+                Tuple(spriteOffset + 64 * 22 * 64 + 64 * 32, 7), // Attack 3 7
+                Tuple(spriteOffset + 64 * 24 * 64 + 64 * 28 + 32 * 4, 17), // Big Attack 17
+                Tuple(spriteOffset + 64 * 29 * 64 + 64 * 16, 9) // Back Attack 9
         )
-
-        /* TODO: Remove this
-        SPRITES.put(name, HashMap<String, BufferedImage>())
-        val t = JTabbedPane()
-        t.addTab("Idle", null, createSpritePanel(name, "Idle", //6
-                offset, 6),
-                "Edit $name Idle Sprite")
-        t.addTab("Jog", null, createSpritePanel(name, "Jog", //1
-                offset + 64 * 2 * 64 + 64 * 16, 1),
-                "Edit $name Jog Sprite")
-        t.addTab("Run", null, createSpritePanel(name, "Run", //8
-                offset + 64 * 3 * 64 + 64 * 24, 8),
-                "Edit $name Run Sprite")
-        t.addTab("Halt", null, createSpritePanel(name, "Halt", //4
-                offset + 64 * 5 * 64 + 64 * 40, 4),
-                "Edit $name Halt Sprite")
-        t.addTab("Dash", null, createSpritePanel(name, "Dash", //7
-                offset + 64 * 6 * 64 + 64 * 48, 7),
-                "Edit $name Dash Sprite")
-        t.addTab("Turn", null, createSpritePanel(name, "Turn", //3
-                offset + 64 * 9 * 64, 3),
-                "Edit $name Turn Sprite")
-        t.addTab("Change Direction", null, createSpritePanel(name, "Change Direction", //4
-                offset + 64 * 10 * 64 + 64 * 8, 4),
-                "Edit $name Change Direction Sprite")
-        t.addTab("Fall", null, createSpritePanel(name, "Fall", //4
-                offset + 64 * 11 * 64 + 64 * 16, 4),
-                "Edit $name Fall Sprite")
-        t.addTab("Jump", null, createSpritePanel(name, "Jump", //5
-                offset + 64 * 12 * 64 + 64 * 24, 5),
-                "Edit $name Jump Sprite")
-        t.addTab("Land", null, createSpritePanel(name, "Land",
-                offset + 64 * 14 * 64 + 64 * 40, 3), //3
-                "Edit $name Land Sprite")
-        t.addTab("Double Jump", null, createSpritePanel(name, "Double Jump",
-                offset + 64 * 15 * 64 + 64 * 48, 7), //7
-                "Edit $name Double Jump")
-        // These are the normal `B` attacks
-        t.addTab("Attack 1", null, createSpritePanel(name, "Attack 1",
-                offset + 64 * 18 * 64, 6), //6
-                "Edit $name Attack 1")
-        t.addTab("Attack 2", null, createSpritePanel(name, "Attack 2",
-                offset + 64 * 20 * 64 + 64 * 16, 6), //6
-                "Edit $name Attack 2")
-        t.addTab("Attack 3", null, createSpritePanel(name, "Attack 3",
-                offset + 64 * 22 * 64 + 64 * 32, 7), //7
-                "Edit $name Attack 3")
-        t.addTab("Big Attack", null, createSpritePanel(name, "Big Attack",
-                /* This one is a little weird */
-                offset + 64 * 24 * 64 + 64 * 28 + 32 * 4, 17), //17
-                "Edit $name Big Attack")
-        // When you press the direction away from where you're pointing and B
-        t.addTab("Back Attack", null, createSpritePanel(name, "Back Attack",
-                offset + 64 * 29 * 64 + 64 * 16, 9), //9
-                "Edit $name Back Attack")
-        */
-        pane.addTab(name, null, createSpritePanel(name, spriteData), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
     }
 
     @Throws(Exception::class)
     fun addSpriteTab(pane: JTabbedPane, name: String, offset: Int, amount: Int) {
-        pane.addTab(name, null, createSpritePanel(name, listOf(Tuple(offset, amount)), 4), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, listOf(Tuple(offset, amount)), -1, 4), "Edit $name Sprite")
     }
 
     @Throws(Exception::class)
-    fun createSpritePanel(name: String, spriteData: List<Tuple<Int>>, size: Int = 6): JPanel {
+    fun createSpritePanel(name: String, spriteData: List<Tuple<Int>>, paletteOffset: Int, size: Int = 6): JPanel {
         val maxFrames = spriteData.map { it[1] }.max() ?: 6 /*default frame count, though this should never be null*/
 
         val imgWidth = 8 * size * spriteData.size
@@ -213,7 +156,7 @@ object SpriteManager {
 
         SPRITES[name] = img
         val write = JButton("Write to ROM")
-        write.addActionListener { writeImage(name, spriteData); println("Done writing to $name.") }
+        write.addActionListener { writeImage(name, spriteData, paletteOffset); println("Done writing to $name.") }
         val save = JButton("Save sprites")
         save.addActionListener {
             println("Saving Image: $name")
@@ -269,13 +212,24 @@ object SpriteManager {
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
-    fun writeImage(name: String, spriteData: List<Tuple<Int>>, size: Int = 6) {
+    fun writeImage(name: String, spriteData: List<Tuple<Int>>, paletteOffset: Int, size: Int = 6) {
         val oldImage = SPRITES[name] ?: throw Exception("Null Image for $name")
 
         // Get the palette from the image
         val palette = (0..15).map { Color(oldImage.getRGB(it, 0)) }
         // Remove the palette so we can write the image
         (1..15).forEach { oldImage.setRGB(it, 0, palette[0].rgb) }
+
+        // Write new palette to rom
+        (0..15).forEach {
+            val c = GBAColor.toGBA(palette[it])
+            val h1 = Integer.parseInt(c.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty)[0], 16)
+            val h2 = Integer.parseInt(c.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty)[1], 16)
+            SBHS.raf.seek((paletteOffset + it * 2).toLong())
+            SBHS.raf.write(h2)
+            SBHS.raf.seek((paletteOffset + it * 2 + 1).toLong())
+            SBHS.raf.write(h1)
+        }
 
         val img = convertImageToGBAColors(oldImage, palette)
 
@@ -299,7 +253,11 @@ object SpriteManager {
                                 val iy = currentFrame * size * 8 + sy * 8 + y
                                 sections[sx + sy * size].values[y][x] = try {
                                     val color = Color(img.getRGB(ix, iy))
-                                    val value = palette.indexOf(color)
+                                    var value = palette.indexOf(color)
+                                    if (value < 0) {
+                                        System.err.println("Can't find color $color in the palette.")
+                                        value = 0
+                                    }
                                     value
                                 } catch(e: Exception) {
                                     print("i($ix,$iy)/(${img.width},${img.height});")
