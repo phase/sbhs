@@ -29,23 +29,44 @@ object SpriteManager {
     @Throws(Exception::class)
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, spriteOffset: Int, paletteOffset: Int) {
         val spriteData = listOf(
-                // TODO: Convert these to single hex numbers
-                Tuple(spriteOffset, 6), // Idle 6
-                Tuple(spriteOffset + 64 * 2 * 64 + 64 * 16, 1), // Jog 1
-                Tuple(spriteOffset + 64 * 3 * 64 + 64 * 24, 8), // Run 8
-                Tuple(spriteOffset + 64 * 5 * 64 + 64 * 40, 4), // Halt 4
-                Tuple(spriteOffset + 64 * 6 * 64 + 64 * 48, 7), // Dash 7
-                Tuple(spriteOffset + 64 * 9 * 64, 3), // Turn 3
-                Tuple(spriteOffset + 64 * 10 * 64 + 64 * 8, 4), // Change Direction 4
-                Tuple(spriteOffset + 64 * 11 * 64 + 64 * 16, 4), // Fall 4
-                Tuple(spriteOffset + 64 * 12 * 64 + 64 * 24, 5), // Jump 5
-                Tuple(spriteOffset + 64 * 14 * 64 + 64 * 40, 3), // Land 3
-                Tuple(spriteOffset + 64 * 15 * 64 + 64 * 48, 7), // Double Jump 7
-                Tuple(spriteOffset + 64 * 18 * 64, 6), // Attack 1 6
-                Tuple(spriteOffset + 64 * 20 * 64 + 64 * 16, 6), // Attack 2 6
-                Tuple(spriteOffset + 64 * 22 * 64 + 64 * 32, 7), // Attack 3 7
-                Tuple(spriteOffset + 64 * 24 * 64 + 64 * 28 + 32 * 4, 17), // Big Attack 17
-                Tuple(spriteOffset + 64 * 29 * 64 + 64 * 16, 9) // Back Attack 9
+                // One frame is 0x480
+                Tuple(spriteOffset, 8), // Idle 6
+                Tuple(spriteOffset + 0x02400, 1), // Jog 1
+                Tuple(spriteOffset + 0x03600, 8), // Run 8
+                Tuple(spriteOffset + 0x05a00, 4), // Halt 4
+                Tuple(spriteOffset + 0x06c00, 8), // Dash 7
+                Tuple(spriteOffset + 0x09000, 4), // Turn 3
+                Tuple(spriteOffset + 0x0a200, 4), // Change Direction 4
+                Tuple(spriteOffset + 0x0b400, 4), // Fall 4
+                Tuple(spriteOffset + 0x0c600, 8), // Jump 5
+                Tuple(spriteOffset + 0x0ea00, 4), // Land 3
+                Tuple(spriteOffset + 0x0fc00, 8), // Double Jump 7
+                Tuple(spriteOffset + 0x12000, 8), // Attack 1 6
+                Tuple(spriteOffset + 0x14400, 8), // Attack 2 6
+                Tuple(spriteOffset + 0x16800, 8), // Attack 3 7
+                Tuple(spriteOffset + 0x18c00, 16), // Big Attack 17
+                Tuple(spriteOffset + 0x1d400, 12), // Back Attack 9
+                Tuple(spriteOffset + 0x20a00, 12),
+                Tuple(spriteOffset + 0x24000, 8),
+                Tuple(spriteOffset + 0x26400, 12),
+                Tuple(spriteOffset + 0x29a00, 8),
+                Tuple(spriteOffset + 0x2be00, 8),
+                Tuple(spriteOffset + 0x2e200, 16),
+                Tuple(spriteOffset + 0x32a00, 8),
+                Tuple(spriteOffset + 0x34e00, 12),
+                Tuple(spriteOffset + 0x38400, 8),
+                Tuple(spriteOffset + 0x3a800, 8),
+                Tuple(spriteOffset + 0x3cc00, 4),
+                Tuple(spriteOffset + 0x3de00, 8),
+                Tuple(spriteOffset + 0x40200, 4),
+                Tuple(spriteOffset + 0x41400, 1),
+                Tuple(spriteOffset + 0x42600, 8),
+                Tuple(spriteOffset + 0x44a00, 8),
+                Tuple(spriteOffset + 0x46e00, 12),
+                Tuple(spriteOffset + 0x4a400, 4),
+                Tuple(spriteOffset + 0x4b600, 8),
+                Tuple(spriteOffset + 0x4da00, 1),
+                Tuple(spriteOffset + 0x4ec00, 4)
         )
         pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
     }
@@ -189,8 +210,8 @@ object SpriteManager {
         val jp = JPanel()
         val sw = ((SBHS.frame.width - 64) * 0.7).toInt()
         val sh = (sw * img.height) / img.width
-        val spriteSheet = ImageIcon(scale(img, sw, sh))
-//        val spriteSheet = ImageIcon(img)
+//        val spriteSheet = ImageIcon(scale(img, sw, sh))
+        val spriteSheet = ImageIcon(img)
 
         val buttons = JPanel()
         buttons.layout = BoxLayout(buttons, BoxLayout.Y_AXIS)

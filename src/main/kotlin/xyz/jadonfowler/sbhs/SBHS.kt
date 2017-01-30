@@ -77,6 +77,16 @@ object SBHS {
             // TODO: Add this back in
 //            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
             SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47AFD8, 0x47AFB8)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Tails", 0x528418, 0x5283F8)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Knuckles", 0x4CADF8, 0x4CADD8)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Amy", 0x636478, 0x636458)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Shadow", 0x58D838, 0x58D818)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Rouge", 0x5F3E58, 0x5F3E38)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "E-102", 0x681A98, 0x681A78)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Chaos", 0x7336D8, 0x7336B8)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Emerl", 0x787D1A, 0x787CFA)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Eggman", 0x7822F8, 0x7822D8)
+
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
         }
         run {
