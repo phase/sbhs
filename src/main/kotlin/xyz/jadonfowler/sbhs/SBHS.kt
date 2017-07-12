@@ -8,9 +8,12 @@ import javax.swing.*
  * @author https://github.com/phase
  */
 object SBHS {
-    val VERSION = "1.2.1"
+    val VERSION = "1.2.2"
     var gameLocation = ""
-    var raf: RandomAccessFile = RandomAccessFile("/dev/null", "r")
+    var raf: RandomAccessFile = // Start with null file
+            if (System.getProperty("os.name").toLowerCase().contains("win"))
+                RandomAccessFile("NUL", "r")
+            else RandomAccessFile("/dev/null", "r") // If not windows, assume unix.
     var frame: JFrame = JFrame("Sonic Battle Hack Suite $VERSION - By Phase")
     val WIDTH = 1280
     val HEIGHT = 840
@@ -24,7 +27,7 @@ object SBHS {
         frame.isResizable = true
         frame.setLocationRelativeTo(null) // Center of screen
         frame.extendedState = Frame.MAXIMIZED_BOTH // Full screen
-        frame.iconImage = ImageIcon(SBHS::class.java.getResource("/icon.png")).getImage()
+        frame.iconImage = ImageIcon(SBHS::class.java.getResource("/icon.png")).image
 
         val config = File("config.txt")
         if (config.exists() && config.isFile)
@@ -76,16 +79,26 @@ object SBHS {
             val spriteTabs = JTabbedPane()
             // TODO: Add this back in
 //            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47AFD8, 0x47AFB8)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Tails", 0x528418, 0x5283F8)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Knuckles", 0x4CADF8, 0x4CADD8)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Amy", 0x636478, 0x636458)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Shadow", 0x58D838, 0x58D818)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Rouge", 0x5F3E58, 0x5F3E38)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "E-102", 0x681A98, 0x681A78)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Chaos", 0x7336D8, 0x7336B8)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Emerl", 0x787D1A, 0x787CFA)
-            SpriteManager.addCharacterSpriteTab(spriteTabs, "Eggman", 0x7822F8, 0x7822D8)
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Sonic", 0x47AFD8, 0x47AFB8,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Tails", 0x528418, 0x5283F8,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 28, 12, 12, 8, 8, 8, 8, 20, 8, 20, 16, 8, 8, 4, 8, 8, 8, 8, 4, 8, 8, 4, 8, 8, 8, 8, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Knuckles", 0x4CADF8, 0x4CADD8,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Amy", 0x636478, 0x636458,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Shadow", 0x58D838, 0x58D818,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Rouge", 0x5F3E58, 0x5F3E38,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "E-102", 0x681A98, 0x681A78,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Chaos", 0x7336D8, 0x7336B8,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Emerl", 0x787D1A, 0x787CFA,
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+            SpriteManager.addCharacterSpriteTab(spriteTabs, "Eggman", 0x7822F8, 0x7822D8,
+                    listOf(4, 4, 4, 4, 4))
 
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
         }

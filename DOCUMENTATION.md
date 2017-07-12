@@ -146,15 +146,15 @@ Here is the character table:
 Art Editing
 -----------
 
-###unLZ-gba offsets
+### unLZ-gba offsets
 Most of the images are LZ77 compressed, meaning you can edit them in unLZ.
 
-####Overworld
+#### Overworld
 Overworld char sprites go from 363 to 372. Before that are a bunch of option menus and whatnot, more on that later.
 
 To get a view of the sprites normally, hit minus all the way, then plus 3.
 
-####Talking
+#### Talking
 Talking animations begin at 393 with Sonic and go to 425, ending with E-102.
 
 ### Decompressed Art
