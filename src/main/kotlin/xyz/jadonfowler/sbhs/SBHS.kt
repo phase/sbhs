@@ -84,7 +84,7 @@ object SBHS {
             SpriteManager.addCharacterSpriteTab(spriteTabs, "Tails", 0x528418, 0x5283F8,
                     listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 28, 12, 12, 8, 8, 8, 8, 20, 8, 20, 16, 8, 8, 4, 8, 8, 8, 8, 4, 8, 8, 4, 8, 8, 8, 8, 8, 4, 4))
             SpriteManager.addCharacterSpriteTab(spriteTabs, "Knuckles", 0x4CADF8, 0x4CADD8,
-                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
+                    listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 12, 16, 12, 12, 8, 12, 8, 8, 8, 8, 8, 12, 8, 8, 4, 8, 8, 12, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 4, 8, 4, 4))
             SpriteManager.addCharacterSpriteTab(spriteTabs, "Amy", 0x636478, 0x636458,
                     listOf(8, 4, 8, 4, 8, 4, 4, 4, 8, 4, 8, 8, 8, 8, 16, 12, 12, 8, 12, 8, 8, 16, 8, 12, 8, 8, 4, 8, 4, 4, 8, 8, 4, 8, 4, 8, 4, 4))
             SpriteManager.addCharacterSpriteTab(spriteTabs, "Shadow", 0x58D838, 0x58D818,
