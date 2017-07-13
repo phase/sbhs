@@ -27,13 +27,14 @@ object SpriteManager {
 
     @Throws(Exception::class)
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, spriteOffset: Int, paletteOffset: Int, spriteFrames: List<Int>) {
-        val spriteData2 = mutableListOf<Tuple<Int>>()
+        println("$name has ${spriteFrames.size} animations.")
+        val spriteData = mutableListOf<Tuple<Int>>()
         var o = 0
         spriteFrames.forEach {
-            spriteData2.add(Tuple(spriteOffset + 0x480 * o, it))
+            spriteData.add(Tuple(spriteOffset + 0x480 * o, it))
             o += it
         }
-        pane.addTab(name, null, createSpritePanel(name, spriteData2, paletteOffset), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
     }
 
     @Throws(Exception::class)
