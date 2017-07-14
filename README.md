@@ -2,6 +2,10 @@
 <p align="center">This is a repository for hacking Sonic Battle,
 a game for the GameBoy Advanced released in 2004.</p>
 
+<p align="center">You can join our
+<a href="https://discord.gg/JPE3FBM">Discord</a> for information on
+updates.</p>
+
 ## Documentation
 All docs on Sonic Battle reverse engineering are in [**`DOCUMENTATION.md`**](DOCUMENTATION.md).
 
