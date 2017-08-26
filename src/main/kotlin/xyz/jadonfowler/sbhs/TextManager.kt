@@ -41,6 +41,7 @@ object TextManager {
             }
         }
         s = s.replace("]", "").replace("[", "")
+        s = s.replace("{", "{^")
         // System.out.println(s);
         //int[] conv = SBString.to(s);
         // System.out.println(orig.length + "\n" + conv.length + "\n" + "They
@@ -50,25 +51,21 @@ object TextManager {
         textArea.text = s
         // System.out.println(hex(Math.abs(from - to - SBString.to(s).length)));
         val write = JButton("Write to ROM")
-        write.addActionListener(object : ActionListener {
-            internal val t = to.toByte()
-            internal val f = from.toByte()
-
-            override fun actionPerformed(e: ActionEvent) {
-                try {
-                    var j = 0
-                    val text = SBString.to(textArea.text)
-                    for (i in t..f - 1) {
-                        SBHS.raf.seek(i.toLong())
-                        SBHS.raf.write(text[j])
-                        j++
-                    }
-                } catch (E: Exception) {
-                    E.printStackTrace()
+        write.addActionListener { e: ActionEvent ->
+            try {
+                var j = 0
+                val text = SBString.to(textArea.text)
+                for (i in to..from - 1) {
+//                    println("0x" + Integer.toHexString(i))
+                    SBHS.raf.seek(i.toLong())
+                    SBHS.raf.write(text[j])
+                    j++
                 }
-
+            } catch (E: Exception) {
+                E.printStackTrace()
             }
-        })
+
+        }
         // p.add(write);
         val sp = JScrollPane(textArea)
         // sp.setBounds(23, 3, 394, 20);

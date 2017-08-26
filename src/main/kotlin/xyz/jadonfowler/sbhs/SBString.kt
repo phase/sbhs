@@ -106,26 +106,32 @@ object SBString {
 
     fun to(s: String): IntArray {
         var s = s
-        s = s.replace("\n\n", "]^")
+        s = s.replace("\n------\n", "]^")
         s = s.replace("\n", "[^")
+        println(s)
         val to = IntArray(s.length * 2 - 1)
         var i = 0
         var k = 0
-        while (i < s.length * 2) {
-            val c = s.toCharArray()[k++]
+        val chars = s.toCharArray()
+        while (k < chars.size) {
+            val c = chars[k++]
             if (!TABLE.keys.contains(c)) {
-                i -= 2
-                i += 2
                 continue
             }
-            to[i] = (TABLE[c] as Int).toByte().toInt()
+            val b = TABLE[c]!!
+            to[i] = b
             try { // Should fail for the last one
-                to[i + 1] = 0 // 0x00
+                if (b == 0xFB || b == 0xFD || b == 0xFE || b == 0xFF) {
+                    i--
+                } else {
+                    to[i + 1] = 0 // 0x00
+                }
             } catch (e: Exception) {
             }
 
             i += 2
         }
+        println("Produced: ${to.map { Integer.toHexString(it).toUpperCase() }.joinToString(" ")}")
         return to
     }
 
@@ -142,7 +148,7 @@ object SBString {
                 continue
             } else if (i == 0xFF) {
                 when (last) {
-                    0xFE -> s += "\n\n"
+                    0xFE -> s += "\n------\n"
                     0xFD -> s += "\n"
                     else -> {
                     }
@@ -151,13 +157,14 @@ object SBString {
                 if (REVERSE_TABLE.containsKey(i)) {
                     s += REVERSE_TABLE[i]
                     last = -1
+                    continue
                 }
             }/*
              * else if (i == 0xFE || i == 0xFD) { last = i; continue;// ignore }
              */
             last = i
         }
-        return s.replace("]]", "[").replace("]", "\n\n").replace("[", "\n").replace("\\s\\s\\s".toRegex(), "")
+        return s.replace("]]", "[").replace("]", "\n------\n").replace("[", "\n").replace("\\s\\s\\s".toRegex(), "")
     }
 
     fun convert(last: Int, i: Int): String {
@@ -165,7 +172,7 @@ object SBString {
             return " "
         } else if (i == 0xFF) {
             when (last) {
-                0xFE -> return "\n\n"
+                0xFE -> return "\n------\n"
                 0xFD -> return "\n"
                 else -> {
                 }

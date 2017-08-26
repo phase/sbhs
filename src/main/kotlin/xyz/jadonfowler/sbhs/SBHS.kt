@@ -106,7 +106,8 @@ object SBHS {
             // About Page
             val t = JTextPane()
             t.text = "Sonic Battle Hack Suite $VERSION was made by Phase.\n" +
-                    "You can find the source at https://github.com/phase/sbhs"
+                    "You can find the source at https://github.com/phase/sbhs\n" +
+                    "Current ROM open: $gameLocation"
             t.isEditable = false
             mainTabs.addTab("About", null, t, "About Page")
         }
