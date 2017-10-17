@@ -48,6 +48,82 @@ object SpriteManager {
 
         val imgWidth = 8 * size * spriteData.size
         val imgHeight = 8 * size * maxFrames
+        val img: BufferedImage = readImage(name, spriteData, imgWidth, imgHeight, size)
+        SPRITES[name] = img
+
+        val write = JButton("Write to ROM")
+
+        val save = JButton("Save sprites")
+        save.addActionListener {
+            println("Saving Image: $name")
+            val i = SPRITES[name]!!
+            val fc = JFileChooser()
+            if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    val o = fc.selectedFile
+                    ImageIO.write(i, "png", o)
+                } catch (x: IOException) {
+                    x.printStackTrace()
+                }
+
+            }
+        }
+        val upload = JButton("Upload sprites")
+
+        val jp = JPanel()
+
+        val buttons = JPanel()
+        buttons.layout = BoxLayout(buttons, BoxLayout.Y_AXIS)
+        buttons.add(write)
+        buttons.add(save)
+        buttons.add(upload)
+        jp.add(buttons)
+
+//        Scaling the image
+//        val sw = ((SBHS.frame.width - 64) * 0.7).toInt()
+//        val sh = (sw * img.height) / img.width
+//        val spriteSheet = ImageIcon(scale(img, sw, sh))
+        val scrollPane = ScrollPane()
+        scrollPane.setBounds(0, 0, (SBHS.frame.width * 0.9).toInt(), (SBHS.frame.height * 0.9).toInt())
+        scrollPane.add(JLabel(ImageIcon(img)))
+
+        upload.addActionListener {
+            println("Uploading Image: $name")
+            val fc = JFileChooser()
+            if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    val i = ImageIO.read(fc.selectedFile)
+                    SPRITES[name] = i
+
+                    // Replace the sprite in the window
+                    scrollPane.remove(0)
+                    scrollPane.add(JLabel(ImageIcon(i)))
+                } catch (x: IOException) {
+                    x.printStackTrace()
+                }
+            }
+        }
+
+        write.addActionListener {
+            writeImage(name, spriteData, paletteOffset)
+            println("Done writing to $name.")
+
+            // Replace the sprite in the window
+            val i = readImage(name, spriteData, imgWidth, imgHeight, size)
+            scrollPane.remove(0)
+            scrollPane.add(JLabel(ImageIcon(i)))
+        }
+
+        jp.add(scrollPane)
+        return jp
+    }
+
+    /**
+     * Writes uncompressed sprite to ROM
+     *
+     * @param spriteData List of animation data, which contain the offset and the frame count
+     */
+    fun readImage(name: String, spriteData: List<Tuple<Int>>, imgWidth: Int, imgHeight: Int, size: Int = 6): BufferedImage {
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
 
         val g = img.createGraphics()
@@ -141,57 +217,7 @@ object SpriteManager {
             img.setRGB(i, 0, color.rgb)
         }
 
-        SPRITES[name] = img
-        val write = JButton("Write to ROM")
-        write.addActionListener { writeImage(name, spriteData, paletteOffset); println("Done writing to $name.") }
-        val save = JButton("Save sprites")
-        save.addActionListener {
-            println("Saving Image: $name")
-            val i = SPRITES[name]!!
-            val fc = JFileChooser()
-            if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    val o = fc.selectedFile
-                    ImageIO.write(i, "png", o)
-                } catch (x: IOException) {
-                    x.printStackTrace()
-                }
-
-            }
-        }
-        val upload = JButton("Upload sprites")
-        upload.addActionListener {
-            println("Uploading Image: $name")
-            val fc = JFileChooser()
-            if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    val i = ImageIO.read(fc.selectedFile)
-                    SPRITES[name] = i
-                } catch (x: IOException) {
-                    x.printStackTrace()
-                }
-
-            }
-        }
-        val jp = JPanel()
-        val sw = ((SBHS.frame.width - 64) * 0.7).toInt()
-        val sh = (sw * img.height) / img.width
-//        val spriteSheet = ImageIcon(scale(img, sw, sh))
-        val spriteSheet = ImageIcon(img)
-
-        val buttons = JPanel()
-        buttons.layout = BoxLayout(buttons, BoxLayout.Y_AXIS)
-        buttons.add(write)
-        buttons.add(save)
-        buttons.add(upload)
-        jp.add(buttons)
-
-        val spriteLabel = JLabel(spriteSheet)
-        val scrollPane = ScrollPane()
-        scrollPane.setBounds(0, 0, (SBHS.frame.width * 0.9).toInt(), (SBHS.frame.height * 0.9).toInt())
-        scrollPane.add(spriteLabel)
-        jp.add(scrollPane)
-        return jp
+        return img
     }
 
     /**
@@ -206,6 +232,9 @@ object SpriteManager {
         val palette = (0..15).map { Color(oldImage.getRGB(it, 0)) }
         // Remove the palette so we can write the image
         (1..15).forEach { oldImage.setRGB(it, 0, palette[0].rgb) }
+
+        // Save it to memory
+        PaletteManager.PALETTES[name] = palette.map { GBAColor.toGBA(it) }.toTypedArray()
 
         // Write new palette to rom
         (0..15).forEach {
