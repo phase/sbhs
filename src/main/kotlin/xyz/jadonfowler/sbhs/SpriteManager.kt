@@ -9,16 +9,6 @@ import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.BoxLayout
 
-class Tuple<out A>(val a: A, val b: A) {
-    operator fun get(i: Int): A {
-        return when (i) {
-            0 -> a
-            1 -> b
-            else -> throw IllegalArgumentException("$i is not in this Tuple.")
-        }
-    }
-}
-
 object SpriteManager {
 
     class SpriteSection(val values: Array<Array<Int>>)
@@ -28,10 +18,10 @@ object SpriteManager {
     @Throws(Exception::class)
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, spriteOffset: Int, paletteOffset: Int, spriteFrames: List<Int>) {
         println("$name has ${spriteFrames.size} animations.")
-        val spriteData = mutableListOf<Tuple<Int>>()
+        val spriteData = mutableListOf<Pair<Int, Int>>()
         var o = 0
         spriteFrames.forEach {
-            spriteData.add(Tuple(spriteOffset + 0x480 * o, it))
+            spriteData.add(Pair(spriteOffset + 0x480 * o, it))
             o += it
         }
         pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
@@ -39,12 +29,12 @@ object SpriteManager {
 
     @Throws(Exception::class)
     fun addSpriteTab(pane: JTabbedPane, name: String, offset: Int, amount: Int) {
-        pane.addTab(name, null, createSpritePanel(name, listOf(Tuple(offset, amount)), -1, 4), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, listOf(Pair(offset, amount)), -1, 4), "Edit $name Sprite")
     }
 
     @Throws(Exception::class)
-    fun createSpritePanel(name: String, spriteData: List<Tuple<Int>>, paletteOffset: Int, size: Int = 6): JPanel {
-        val maxFrames = spriteData.map { it[1] }.max() ?: 6 /*default frame count, though this should never be null*/
+    fun createSpritePanel(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6): JPanel {
+        val maxFrames = spriteData.map { it.second }.max() ?: 6 /*default frame count, though this should never be null*/
 
         val imgWidth = 8 * size * spriteData.size
         val imgHeight = 8 * size * maxFrames
@@ -123,7 +113,7 @@ object SpriteManager {
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
-    fun readImage(name: String, spriteData: List<Tuple<Int>>, imgWidth: Int, imgHeight: Int, size: Int = 6): BufferedImage {
+    fun readImage(name: String, spriteData: List<Pair<Int, Int>>, imgWidth: Int, imgHeight: Int, size: Int = 6): BufferedImage {
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
 
         val g = img.createGraphics()
@@ -132,9 +122,9 @@ object SpriteManager {
         g.dispose()
 
         spriteData.forEachIndexed { animationIndex, animationData ->
-            val offset = animationData[0]
+            val offset = animationData.first
             var currentFrame = 0
-            while (currentFrame < animationData[1]) {
+            while (currentFrame < animationData.second) {
                 val sections = Array(36, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
 
                 var currentSection = 0
@@ -225,7 +215,7 @@ object SpriteManager {
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
-    fun writeImage(name: String, spriteData: List<Tuple<Int>>, paletteOffset: Int, size: Int = 6) {
+    fun writeImage(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6) {
         val oldImage = SPRITES[name] ?: throw Exception("Null Image for $name")
 
         // Get the palette from the image
@@ -250,9 +240,9 @@ object SpriteManager {
         val img = convertImageToGBAColors(oldImage, palette)
 
         spriteData.forEachIndexed { animationIndex, animationData ->
-            val offset = animationData[0]
+            val offset = animationData.first
             println("0x" + Integer.toHexString(offset))
-            val frames = animationData[1]
+            val frames = animationData.second
             var currentFrame = 0
             while (currentFrame < frames) {
                 val sections = Array(size * size, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
