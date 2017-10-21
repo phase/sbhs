@@ -18,7 +18,6 @@ object SBHS {
     val WIDTH = 1280
     val HEIGHT = 840
 
-    @Throws(Exception::class)
     @JvmStatic fun main(args: Array<String>) {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
@@ -157,12 +156,4 @@ object SBHS {
         return (if (i < 0x10) "0" else "") + Integer.toHexString(i)
     }
 
-    fun join(a: String, b: String): String {
-        var f = ""
-        val aa = a.split("\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-        val ba = b.split("\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-        for (i in aa.indices)
-            f += aa[i] + ba[i] + "\n"
-        return f
-    }
 }

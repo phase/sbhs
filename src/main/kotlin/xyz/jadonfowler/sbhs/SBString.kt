@@ -159,9 +159,7 @@ object SBString {
                     last = -1
                     continue
                 }
-            }/*
-             * else if (i == 0xFE || i == 0xFD) { last = i; continue;// ignore }
-             */
+            }
             last = i
         }
         return s.replace("]]", "[").replace("]", "\n------\n").replace("[", "\n").replace("\\s\\s\\s".toRegex(), "")

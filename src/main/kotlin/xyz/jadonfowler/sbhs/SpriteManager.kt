@@ -15,7 +15,6 @@ object SpriteManager {
 
     var SPRITES = HashMap<String, BufferedImage>()
 
-    @Throws(Exception::class)
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, spriteOffset: Int, paletteOffset: Int, spriteFrames: List<Int>) {
         println("$name has ${spriteFrames.size} animations.")
         val spriteData = mutableListOf<Pair<Int, Int>>()
@@ -27,12 +26,10 @@ object SpriteManager {
         pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
     }
 
-    @Throws(Exception::class)
     fun addSpriteTab(pane: JTabbedPane, name: String, offset: Int, amount: Int) {
         pane.addTab(name, null, createSpritePanel(name, listOf(Pair(offset, amount)), -1, 4), "Edit $name Sprite")
     }
 
-    @Throws(Exception::class)
     fun createSpritePanel(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6): JPanel {
         val maxFrames = spriteData.map { it.second }.max() ?: 6 /*default frame count, though this should never be null*/
 
@@ -109,7 +106,7 @@ object SpriteManager {
     }
 
     /**
-     * Writes uncompressed sprite to ROM
+     * Reads uncompressed sprite from ROM
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
@@ -359,11 +356,10 @@ object SpriteManager {
      */
     fun scale(src: BufferedImage, w: Int, h: Int): BufferedImage {
         val img = BufferedImage(w, h, BufferedImage.TYPE_INT_RGB)
-        var x: Int
-        var y: Int
+        var x = 0
+        var y : Int
         val ww = src.width
         val hh = src.height
-        x = 0
         while (x < w) {
             y = 0
             while (y < h) {
@@ -382,7 +378,6 @@ object SpriteManager {
         return BufferedImage(cm, raster, cm.isAlphaPremultiplied, null)
     }
 
-    // TODO: This function is poorly named
     fun BufferedImage.changeColors(l: (Color) -> Color) {
         var y = 0
         while (y < this.height) {

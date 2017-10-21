@@ -32,12 +32,12 @@ object PaletteManager {
     }
 
     @Throws(Exception::class)
-    fun createPalettePanel(name: String, hex: Int): JPanel {
-        PALETTE_OFFSET.put(name, hex)
+    fun createPalettePanel(name: String, offset: Int): JPanel {
+        PALETTE_OFFSET.put(name, offset)
         val colors = arrayOfNulls<String>(16)
         var color = 0
         var f = ""
-        for (i in hex..hex + 32) {
+        for (i in offset..offset + 32) {
             SBHS.raf.seek(i.toLong())
             val value = SBHS.raf.read()
             //System.out.println(value + " " + f);
@@ -83,9 +83,9 @@ object PaletteManager {
                         val h2 = Integer.parseInt(colors[i]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()?.get(1), 16)
                         // colors[i] = Integer.toHexString(h2) +
                         // Integer.toHexString(h1) + "";
-                        SBHS.raf.seek((hex + i * 2).toLong())
+                        SBHS.raf.seek((offset + i * 2).toLong())
                         SBHS.raf.write(h2)
-                        SBHS.raf.seek((hex + i * 2 + 1).toLong())
+                        SBHS.raf.seek((offset + i * 2 + 1).toLong())
                         SBHS.raf.write(h1)
                     } catch (e1: IOException) {
                         e1.printStackTrace()
@@ -110,9 +110,9 @@ object PaletteManager {
                         try {
                             val h1 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()?.get(0), 16)
                             val h2 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()?.get(1), 16)
-                            SBHS.raf.seek((hex + x * 2).toLong())
+                            SBHS.raf.seek((offset + x * 2).toLong())
                             SBHS.raf.write(h2)
-                            SBHS.raf.seek((hex + x * 2 + 1).toLong())
+                            SBHS.raf.seek((offset + x * 2 + 1).toLong())
                             SBHS.raf.write(h1)
                         } catch (e1: IOException) {
                             e1.printStackTrace()
