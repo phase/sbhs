@@ -8,7 +8,7 @@ import javax.swing.*
  * @author https://github.com/phase
  */
 object SBHS {
-    val VERSION = "1.2.2"
+    val VERSION = "1.3"
     var gameLocation = ""
     var raf: RandomAccessFile = // Start with null file
             if (System.getProperty("os.name").toLowerCase().contains("win"))
