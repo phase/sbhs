@@ -90,7 +90,7 @@ object SBHS {
 
                 // Add the image to the tabs
                 val image = SpriteManager.readImage("Emerl", spriteData)
-                emerlTabs.addTab(char.name, null, SpriteManager.createSpritePanel("Emerl", image, spriteData, emerl.paletteOffset), "Edit Emerl/${char.name} Sprite")
+                emerlTabs.addTab(char.name, null, SpriteManager.createSpritePanel("Emerl/${char.name}", image, spriteData, emerl.paletteOffset), "Edit Emerl/${char.name} Sprite")
 
             }
             spriteTabs.addTab("Emerl", null, emerlTabs, "Emerl")
