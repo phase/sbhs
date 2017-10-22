@@ -15,14 +15,8 @@ object SpriteManager {
 
     var SPRITES = HashMap<String, BufferedImage>()
 
-    fun addCharacterSpriteTab(pane: JTabbedPane, name: String, spriteOffset: Int, paletteOffset: Int, spriteFrames: List<Int>) {
-        println("$name has ${spriteFrames.size} animations.")
-        val spriteData = mutableListOf<Pair<Int, Int>>()
-        var o = 0
-        spriteFrames.forEach {
-            spriteData.add(Pair(spriteOffset + 0x480 * o, it))
-            o += it
-        }
+    fun addCharacterSpriteTab(pane: JTabbedPane, name: String, paletteOffset: Int, spriteData: List<Pair<Int, Int>>) {
+        println("$name has ${spriteData.size} animations.")
         pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
     }
 
@@ -31,31 +25,13 @@ object SpriteManager {
     }
 
     fun createSpritePanel(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6): JPanel {
-        val maxFrames = spriteData.map { it.second }.max() ?: 6 /*default frame count, though this should never be null*/
-
-        val imgWidth = 8 * size * spriteData.size
-        val imgHeight = 8 * size * maxFrames
-        val img: BufferedImage = readImage(name, spriteData, imgWidth, imgHeight, size)
+        val img: BufferedImage = readImage(name, spriteData, size)
         SPRITES[name] = img
 
         val write = JButton("Write to ROM")
-
         val save = JButton("Save sprites")
-        save.addActionListener {
-            println("Saving Image: $name")
-            val i = SPRITES[name]!!
-            val fc = JFileChooser()
-            if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    val o = fc.selectedFile
-                    ImageIO.write(i, "png", o)
-                } catch (x: IOException) {
-                    x.printStackTrace()
-                }
-
-            }
-        }
         val upload = JButton("Upload sprites")
+
 
         val jp = JPanel()
 
@@ -74,6 +50,31 @@ object SpriteManager {
         scrollPane.setBounds(0, 0, (SBHS.frame.width * 0.9).toInt(), (SBHS.frame.height * 0.9).toInt())
         scrollPane.add(JLabel(ImageIcon(img)))
 
+        write.addActionListener {
+            writeImage(name, spriteData, paletteOffset)
+            println("Done writing to $name.")
+
+            // Replace the sprite in the window
+            val i = readImage(name, spriteData, size)
+            scrollPane.remove(0)
+            scrollPane.add(JLabel(ImageIcon(i)))
+        }
+
+        save.addActionListener {
+            println("Saving Image: $name")
+            val i = SPRITES[name]!!
+            val fc = JFileChooser()
+            if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    val o = fc.selectedFile
+                    ImageIO.write(i, "png", o)
+                } catch (x: IOException) {
+                    x.printStackTrace()
+                }
+
+            }
+        }
+
         upload.addActionListener {
             println("Uploading Image: $name")
             val fc = JFileChooser()
@@ -91,16 +92,6 @@ object SpriteManager {
             }
         }
 
-        write.addActionListener {
-            writeImage(name, spriteData, paletteOffset)
-            println("Done writing to $name.")
-
-            // Replace the sprite in the window
-            val i = readImage(name, spriteData, imgWidth, imgHeight, size)
-            scrollPane.remove(0)
-            scrollPane.add(JLabel(ImageIcon(i)))
-        }
-
         jp.add(scrollPane)
         return jp
     }
@@ -110,7 +101,11 @@ object SpriteManager {
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
-    fun readImage(name: String, spriteData: List<Pair<Int, Int>>, imgWidth: Int, imgHeight: Int, size: Int = 6): BufferedImage {
+    fun readImage(name: String, spriteData: List<Pair<Int, Int>>, size: Int = 6): BufferedImage {
+        val maxFrames = spriteData.map { it.second }.max() ?: 8 /*default frame count, though this should never be null*/
+
+        val imgWidth = 8 * size * spriteData.size
+        val imgHeight = 8 * size * maxFrames
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
 
         val g = img.createGraphics()
@@ -357,7 +352,7 @@ object SpriteManager {
     fun scale(src: BufferedImage, w: Int, h: Int): BufferedImage {
         val img = BufferedImage(w, h, BufferedImage.TYPE_INT_RGB)
         var x = 0
-        var y : Int
+        var y: Int
         val ww = src.width
         val hh = src.height
         while (x < w) {

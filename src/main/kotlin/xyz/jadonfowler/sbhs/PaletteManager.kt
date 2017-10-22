@@ -73,8 +73,8 @@ object PaletteManager {
                 internal val character = name
 
                 override fun actionPerformed(e: ActionEvent) {
-                    val name = jb.text
-                    val i = -1 + Integer.parseInt(name.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[2].replace(":", ""))
+                    val title = jb.text
+                    val i = -1 + Integer.parseInt(title.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[2].replace(":", ""))
                     colors[i] = GBAColor.toGBA(SBHS.getColorInput(GBAColor.fromGBA(colors[i].orEmpty())))
                     PALETTES.remove(character)
                     PALETTES.put(character, colors.map { it.orEmpty() }.toTypedArray())
@@ -91,7 +91,7 @@ object PaletteManager {
                         e1.printStackTrace()
                     }
 
-                    // System.out.println(Arrays.toString(colors));
+                    Character.valueOf(name).updateSpriteTab()
                 }
             })
             jp.add(jb)
@@ -123,6 +123,7 @@ object PaletteManager {
                     PALETTES.remove(name)
                     PALETTES.put(name, colors.map { it.orEmpty() }.toTypedArray())
                     SpriteManager.printPalette(PALETTES[name]!!)
+                    Character.valueOf(name).updateSpriteTab()
                 } catch (x: IOException) {
                     x.printStackTrace()
                 }
