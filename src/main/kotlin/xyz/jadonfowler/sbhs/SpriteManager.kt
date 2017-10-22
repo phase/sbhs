@@ -17,16 +17,15 @@ object SpriteManager {
 
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, paletteOffset: Int, spriteData: List<Pair<Int, Int>>) {
         println("$name has ${spriteData.size} animations.")
-        pane.addTab(name, null, createSpritePanel(name, spriteData, paletteOffset), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, readImage(name, spriteData), spriteData, paletteOffset), "Edit $name Sprite")
     }
 
     fun addSpriteTab(pane: JTabbedPane, name: String, offset: Int, amount: Int) {
-        pane.addTab(name, null, createSpritePanel(name, listOf(Pair(offset, amount)), -1, 4), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, readImage(name, listOf(Pair(offset, amount))), listOf(Pair(offset, amount)), -1, 4), "Edit $name Sprite")
     }
 
-    fun createSpritePanel(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6): JPanel {
-        val img: BufferedImage = readImage(name, spriteData, size)
-        SPRITES[name] = img
+    fun createSpritePanel(name: String, initialImage: BufferedImage, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6): JPanel {
+        SPRITES[name] = initialImage
 
         val write = JButton("Write to ROM")
         val save = JButton("Save sprites")
@@ -48,7 +47,7 @@ object SpriteManager {
 //        val spriteSheet = ImageIcon(scale(img, sw, sh))
         val scrollPane = ScrollPane()
         scrollPane.setBounds(0, 0, (SBHS.frame.width * 0.9).toInt(), (SBHS.frame.height * 0.9).toInt())
-        scrollPane.add(JLabel(ImageIcon(img)))
+        scrollPane.add(JLabel(ImageIcon(initialImage)))
 
         write.addActionListener {
             writeImage(name, spriteData, paletteOffset)

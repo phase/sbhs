@@ -978,7 +978,7 @@ Here are the offsets for each palette.
 | 6F6A98 | Cream's in-fight palette                                   |
 | 7336B8 | Chaos' in-fight palette                                    |
 | 7822D8 | Robotnik's in-fight palette                                |
-| 787CFA | Emerl's in-fight palette                                   |
+| 787CF8 | Emerl's in-fight palette                                   |
 | BF2058 | Dust cloud (from end of combo) palette                     |
 | BF2078 | In-fight shield palette ("opening" animation, when purple) |
 | BF2098 | In-fight shield palette/Tails' gun's power ball            |

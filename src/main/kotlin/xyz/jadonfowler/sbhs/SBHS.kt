@@ -68,8 +68,32 @@ object SBHS {
             // TODO: Add this back in
 //            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
             Character.values().forEach {
-                SpriteManager.addCharacterSpriteTab(spriteTabs, it.name, it.paletteOffset, it.spriteData)
+                if (it != Character.Emerl)
+                    SpriteManager.addCharacterSpriteTab(spriteTabs, it.name, it.paletteOffset, it.spriteData)
+
             }
+            println("Emerl char sprite editor startup ")
+            val emerl = Character.Emerl
+            val emerlTabs = JTabbedPane()
+            var characterByteOffset = 0
+            Character.values().forEachIndexed { i: Int, char: Character ->
+                if (char == Character.Emerl || char == Character.Eggman) return@forEachIndexed
+                val spriteData = mutableListOf<Pair<Int, Int>>()
+                var o = 0
+                char.spriteFrames.forEach {
+                    spriteData.add(Pair(emerl.spriteOffset + 0x480 * o + i * 32 + characterByteOffset, it))
+                    o += it
+                }
+
+                val frames = char.spriteFrames.sum()
+                characterByteOffset += frames * 0x480
+
+                // Add the image to the tabs
+                val image = SpriteManager.readImage("Emerl", spriteData)
+                emerlTabs.addTab(char.name, null, SpriteManager.createSpritePanel("Emerl", image, spriteData, emerl.paletteOffset), "Edit Emerl/${char.name} Sprite")
+
+            }
+            spriteTabs.addTab("Emerl", null, emerlTabs, "Emerl")
             mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
         }
         run {
