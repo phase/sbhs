@@ -211,6 +211,8 @@ object SpriteManager {
 
         // Get the palette from the image
         val palette = (0..15).map { Color(oldImage.getRGB(it, 0)) }
+        // Convert the palette to GBA colors and back
+        val newPalette = palette.map { GBAColor.fromGBA(GBAColor.toGBA(it)) }
         // Remove the palette so we can write the image
         (1..15).forEach { oldImage.setRGB(it, 0, palette[0].rgb) }
 
@@ -228,7 +230,7 @@ object SpriteManager {
             SBHS.raf.write(h1)
         }
 
-        val img = convertImageToGBAColors(oldImage, palette)
+        val img = convertImageToGBAColors(oldImage, palette, newPalette)
 
         spriteData.forEachIndexed { animationIndex, animationData ->
             val offset = animationData.first
@@ -250,14 +252,14 @@ object SpriteManager {
                                 val iy = currentFrame * size * 8 + sy * 8 + y
                                 sections[sx + sy * size].values[y][x] = try {
                                     val color = Color(img.getRGB(ix, iy))
-                                    var value = palette.indexOf(color)
+                                    var value = newPalette.indexOf(color)
                                     if (value < 0) {
                                         System.err.println("Can't find color $color in the palette.")
                                         value = 0
                                     }
                                     value
                                 } catch(e: Exception) {
-                                    print("i($ix,$iy)/(${img.width},${img.height});")
+                                    println("i($ix,$iy)/(${img.width},${img.height});")
                                     println("sx * 8 + x = ${sx * 8 + x}")
                                     println("sy * 8 + y = ${sy * 8 + y}")
                                     println("cf: $currentFrame/$frames for $animationIndex sx: $sx sy: $sy size: $size | ${sx + sy * size} -> ($x, $y)")
@@ -384,13 +386,10 @@ object SpriteManager {
         }
     }
 
-    fun convertImageToGBAColors(img: BufferedImage, palette: List<Color>): BufferedImage {
+    fun convertImageToGBAColors(img: BufferedImage, palette: List<Color>, newPalette: List<Color>): BufferedImage {
         // Copy the image so we don't modify the new one
         val newImage = img.copy()
         println("iw${newImage.width}h${newImage.height};")
-
-        // Convert the palette to GBA colors and back
-        val newPalette = palette.map { GBAColor.fromGBA(GBAColor.toGBA(it)) }
 
         // Replace the colors that need to be replaced
         newImage.changeColors {

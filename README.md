@@ -1,10 +1,10 @@
-<h1 align="center">Sonic Battle Hacking</h1>
-<p align="center">This is a repository for hacking Sonic Battle,
-a game for the GameBoy Advanced released in 2004.</p>
+![Sonic Battle Hacking](src/main/resources/sbhs_logo.png "Sonic Battle Hacking")
 
-<p align="center">You can join our
-<a href="https://discord.gg/JPE3FBM">Discord</a> for information on
-updates.</p>
+This is a repository for hacking Sonic Battle,
+a game for the GameBoy Advanced released in 2004.
+
+You can join our [Discord](https://discord.gg/JPE3FBM)
+for information on updates.
 
 ## Documentation
 All docs on Sonic Battle reverse engineering are in [**`DOCUMENTATION.md`**](DOCUMENTATION.md).

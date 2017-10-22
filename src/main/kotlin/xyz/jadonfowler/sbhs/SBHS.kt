@@ -53,14 +53,14 @@ object SBHS {
             PaletteManager.addPaletteTab(paletteTabs, "Sonic's_Mine", 0xBF20D8)
             PaletteManager.addPaletteTab(paletteTabs, "Tail's_Blaster", 0xBF2098)
             PaletteManager.addPaletteTab(paletteTabs, "Shield", 0xBF2078)
-            mainTabs.addTab("Palette Editor", null, paletteTabs, "Palette Editor")
+            mainTabs.addTab("Palettes", null, paletteTabs, "Palette Editor")
         }
         run {
             val textTabs = JTabbedPane()
             Character.values().filter(Character::hasStory).forEach {
                 TextManager.addTextTab(textTabs, it.name, it.textOffsets.first, it.textOffsets.second)
             }
-            mainTabs.addTab("Text Editor", null, textTabs, "Text Editor")
+            mainTabs.addTab("Story", null, textTabs, "Story Editor")
         }
         run {
             // Sprite Editor
@@ -70,9 +70,8 @@ object SBHS {
             Character.values().forEach {
                 if (it != Character.Emerl)
                     SpriteManager.addCharacterSpriteTab(spriteTabs, it.name, it.paletteOffset, it.spriteData)
-
             }
-            println("Emerl char sprite editor startup ")
+
             val emerl = Character.Emerl
             val emerlTabs = JTabbedPane()
             var characterByteOffset = 0
@@ -81,20 +80,25 @@ object SBHS {
                 val spriteData = mutableListOf<Pair<Int, Int>>()
                 var o = 0
                 char.spriteFrames.forEach {
-                    spriteData.add(Pair(emerl.spriteOffset + 0x480 * o + i * 32 + characterByteOffset, it))
+                    // offset the palette data before the sprites
+                    val paletteOffset = i * 32
+                    spriteData.add(Pair(emerl.spriteOffset + 0x480 * o + paletteOffset + characterByteOffset, it))
                     o += it
                 }
 
+                // skip the sprites that have already been drawn
                 val frames = char.spriteFrames.sum()
                 characterByteOffset += frames * 0x480
 
                 // Add the image to the tabs
                 val image = SpriteManager.readImage("Emerl", spriteData)
-                emerlTabs.addTab(char.name, null, SpriteManager.createSpritePanel("Emerl/${char.name}", image, spriteData, emerl.paletteOffset), "Edit Emerl/${char.name} Sprite")
+                emerlTabs.addTab(char.name, null,
+                        SpriteManager.createSpritePanel("Emerl/${char.name}", image, spriteData, emerl.paletteOffset),
+                        "Edit Emerl/${char.name} Sprite")
 
             }
             spriteTabs.addTab("Emerl", null, emerlTabs, "Emerl")
-            mainTabs.addTab("Sprite Editor", null, spriteTabs, "Sprite Editor")
+            mainTabs.addTab("Sprites", null, spriteTabs, "Sprite Editor")
         }
         run {
             // About Page

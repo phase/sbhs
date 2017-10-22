@@ -2,7 +2,8 @@ Documentation
 =============
 A lot of information in this document
 came from [Sonic Retro](http://info.sonicretro.org/index.php?title=SCHG:Sonic_Battle),
-though I did my fair share of adding to it.
+though I did my fair share of adding to it. There is also a lot of information in the
+code that needs to be added to here.
 
 Text Editing
 ------------

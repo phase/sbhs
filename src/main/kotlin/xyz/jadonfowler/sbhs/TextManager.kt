@@ -16,11 +16,6 @@ object TextManager {
         val textArea = JTextArea(100, 50)
         textArea.rows = 40
         textArea.columns = 70
-        /*
-         * JScrollPane scroll = new JScrollPane(textArea,
-         * JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-         * JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-         */
         textArea.isEditable = true
         var last = 0
         var s = ""
@@ -42,21 +37,13 @@ object TextManager {
         }
         s = s.replace("]", "").replace("[", "")
         s = s.replace("{", "{^")
-        // System.out.println(s);
-        //int[] conv = SBString.to(s);
-        // System.out.println(orig.length + "\n" + conv.length + "\n" + "They
-        // are "
-        // + (Arrays.equals(orig, conv) ? "equal" : "NOT equal"));
-        // s = SBString.from(SBString.to(s));
         textArea.text = s
-        // System.out.println(hex(Math.abs(from - to - SBString.to(s).length)));
         val write = JButton("Write to ROM")
         write.addActionListener { e: ActionEvent ->
             try {
                 var j = 0
                 val text = SBString.to(textArea.text)
                 for (i in to..from - 1) {
-//                    println("0x" + Integer.toHexString(i))
                     SBHS.raf.seek(i.toLong())
                     SBHS.raf.write(text[j])
                     j++
@@ -66,9 +53,7 @@ object TextManager {
             }
 
         }
-        // p.add(write);
         val sp = JScrollPane(textArea)
-        // sp.setBounds(23, 3, 394, 20);
         val bp = JPanel()
         bp.add(write)
         val globalPanel = JPanel()
