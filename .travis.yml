@@ -1,3 +1,22 @@
 language: java
 jdk:
   - oraclejdk8
+
+script:
+  - ./gradlew build
+
+branches:
+  except:
+    - builds
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  file: "build/libs/sbhs.jar"
+  github_token: $GITHUB_TOKEN
+  name: Jadon Fowler
+  email: jadonflower@gmail.com
+  target_branch: builds
+  local_dir: build/libs/
+  on:
+    branch: master
