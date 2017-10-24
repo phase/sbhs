@@ -1,0 +1,33 @@
+body {
+    background-color: #eee;
+}
+
+table, td {
+    border: 1px solid black;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+}
+
+.center {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#title {
+    width: 35%;
+    height: auto;
+}
+
+img {
+    width: 100%;
+}
+
+@media screen and (min-width: 1200px) {
+    .center {
+        width: 50%;
+    }
+}
