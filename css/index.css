@@ -1,5 +1,11 @@
 body {
     background-color: #eee;
+    font-family: "Helvetica";
+    /* background-image: url('../img/background.png'); */
+    background-color: #333;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 /* table, td {
@@ -48,13 +54,24 @@ img {
 }
 
 .showcase p {
-    color: white;
-    font-size: 1em;
-    font-family: "Helvetica";
-    font-weight: bold;
     padding-left: 2px;
     padding-top: 2px;
+}
+
+p, h2, h3 {
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin: auto;
 }
 
 .tiltI {
@@ -63,4 +80,20 @@ img {
 
 .tiltO {
     transform: skewY(-2deg);
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link {
+    color: deepskyblue;
+}
+
+a:visited {
+    color: deepskyblue;
+}
+
+a:hover {
+    color: aqua;
 }
