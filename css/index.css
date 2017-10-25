@@ -2,17 +2,16 @@ body {
     background-color: #eee;
 }
 
-table, td {
+/* table, td {
     border: 1px solid black;
-}
+} */
 
 table {
     width: 100%;
-    text-align: center;
 }
 
 .center {
-    width: 75%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -20,6 +19,10 @@ table {
 #title {
     width: 35%;
     height: auto;
+}
+
+#downloads {
+    text-align: center;
 }
 
 img {
@@ -30,4 +33,34 @@ img {
     .center {
         width: 50%;
     }
+}
+
+.image img {
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+.showcase {
+    height: 100px;
+    background-position: center;
+    background-size: cover;
+}
+
+.showcase p {
+    color: white;
+    font-size: 1em;
+    font-family: "Helvetica";
+    font-weight: bold;
+    padding-left: 2px;
+    padding-top: 2px;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+.tiltI {
+    transform: skewY(2deg);
+}
+
+.tiltO {
+    transform: skewY(-2deg);
 }
