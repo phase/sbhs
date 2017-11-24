@@ -1,7 +1,7 @@
 body {
     background-color: #eee;
     font-family: "Helvetica";
-    /* background-image: url('../img/background.png'); */
+    background-image: url('../img/background.png');
     background-color: #333;
     background-position: center;
     background-size: cover;
@@ -54,13 +54,14 @@ img {
 }
 
 .showcase p {
+    margin: 0;
     padding-left: 2px;
     padding-top: 2px;
 }
 
 p, h2, h3 {
     color: white;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: bold;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
@@ -75,10 +76,12 @@ h3 {
 }
 
 .tiltI {
+    border: 5px solid black;
     transform: skewY(2deg);
 }
 
 .tiltO {
+    border: 5px solid black;
     transform: skewY(-2deg);
 }
 
