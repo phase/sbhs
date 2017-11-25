@@ -95,6 +95,11 @@ object SpriteManager {
         return jp
     }
 
+    // The purples used for the background
+    val PURPLE_1 = Color(255, 0, 250)
+    val PURPLE_2 = Color(185, 0, 255)
+    val PURPLE_3 = Color(185, 0, 185)
+
     /**
      * Reads uncompressed sprite from ROM
      *
@@ -108,7 +113,7 @@ object SpriteManager {
         val img = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
 
         val g = img.createGraphics()
-        g.color = GBAColor.fromGBA(PaletteManager.PALETTES[name]!![0])
+        g.color = PURPLE_3
         g.fillRect(0, 0, img.width, img.height)
         g.dispose()
 
@@ -118,36 +123,38 @@ object SpriteManager {
             while (currentFrame < animationData.second) {
                 val sections = Array(36, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
 
-                var currentSection = 0
-                var x = 1
-                var y = 1
-                val frameOffset = offset + size * size * currentFrame * 32
-                var i = frameOffset
-                while (i < frameOffset + 36 * 32) {
-                    // Getting the values
-                    SBHS.raf.seek(i.toLong())
-                    val v = SBHS.raf.read()
-                    val value = ((if (v < 0x10) "0" else "") + Integer.toString(v, 16)).reversed()
-                    val v1 = Integer.parseInt(value[0].toString(), 16)
-                    val v2 = Integer.parseInt(value[1].toString(), 16)
+                run {
+                    var currentSection = 0
+                    var x = 1
+                    var y = 1
+                    val frameOffset = offset + size * size * currentFrame * 32
+                    var i = frameOffset
+                    while (i < frameOffset + 36 * 32) {
+                        // Getting the values
+                        SBHS.raf.seek(i.toLong())
+                        val v = SBHS.raf.read()
+                        val value = ((if (v < 0x10) "0" else "") + Integer.toString(v, 16)).reversed()
+                        val v1 = Integer.parseInt(value[0].toString(), 16)
+                        val v2 = Integer.parseInt(value[1].toString(), 16)
 
-                    // Setting the values
-                    sections[currentSection].values[y - 1][x - 1] = v1
-                    x++
-                    sections[currentSection].values[y - 1][x - 1] = v2
+                        // Setting the values
+                        sections[currentSection].values[y - 1][x - 1] = v1
+                        x++
+                        sections[currentSection].values[y - 1][x - 1] = v2
 
-                    // Check bounds
-                    if (x != 0 && x % 8 == 0) {
-                        x -= 8
-                        if (y != 0 && y % 8 == 0) {
-                            x = 0
-                            y = 0
-                            currentSection++
+                        // Check bounds
+                        if (x != 0 && x % 8 == 0) {
+                            x -= 8
+                            if (y != 0 && y % 8 == 0) {
+                                x = 0
+                                y = 0
+                                currentSection++
+                            }
+                            y++
                         }
-                        y++
+                        x++
+                        i++
                     }
-                    x++
-                    i++
                 }
 
                 /**
@@ -171,9 +178,17 @@ object SpriteManager {
                 sortedSections.forEachIndexed { i, spriteSection ->
                     spriteSection.values.forEachIndexed { y, values ->
                         values.forEachIndexed { x, v ->
-                            var s: String? = PaletteManager.PALETTES[name]!![v]
-                            if (s == null) s = "0000"
-                            val c = GBAColor.fromGBA(s)
+                            val s: String = PaletteManager.PALETTES[name]?.get(v) ?: "0000"
+                            val c: Color = if (v == 0) {
+                                if (animationIndex % 2 == 0) {
+                                    if (currentFrame % 2 == 0) PURPLE_1
+                                    else PURPLE_2
+                                } else {
+                                    if (currentFrame % 2 == 0) PURPLE_2
+                                    else PURPLE_1
+                                }
+                            } else GBAColor.fromGBA(s)
+
                             val ix = x + (i % size) * 8 + (8 * size * animationIndex)
                             val iy = y + sy * 8 + size * (size + 2) * currentFrame
                             try {
@@ -254,7 +269,7 @@ object SpriteManager {
                                     val color = Color(img.getRGB(ix, iy))
                                     var value = newPalette.indexOf(color)
                                     if (value < 0) {
-                                        System.err.println("Can't find color $color in the palette.")
+//                                        System.err.println("Can't find color $color in the palette.")
                                         value = 0
                                     }
                                     value
