@@ -101,6 +101,11 @@ object SBHS {
             mainTabs.addTab("Sprites", null, spriteTabs, "Sprite Editor")
         }
         run {
+            val effectTabs = JTabbedPane()
+            EffectManager.createEffectPanel("Shield", effectTabs, 0x47AFD8, 20, 4)
+            mainTabs.addTab("Effects", null, effectTabs, "Effect Editor")
+        }
+        run {
             // About Page
             val t = JTextPane()
             t.text = "Sonic Battle Hack Suite $VERSION was made by Phase.\n" +
