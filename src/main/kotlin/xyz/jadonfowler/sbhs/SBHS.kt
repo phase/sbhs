@@ -2,6 +2,7 @@ package xyz.jadonfowler.sbhs
 
 import java.awt.*
 import java.io.*
+import java.net.URL
 import javax.swing.*
 
 /**
@@ -28,7 +29,7 @@ object SBHS {
         frame.isResizable = true
         frame.setLocationRelativeTo(null) // Center of screen
         frame.extendedState = Frame.MAXIMIZED_BOTH // Full screen
-        frame.iconImage = ImageIcon(SBHS::class.java.getResource("/icon.png")).image
+        frame.iconImage = ImageIcon(SBHS::class.java.getResource("/icon.png") ?: File("src/resources/icon.png").toURL()).image
 
         val config = File("config.txt")
         if (config.exists() && config.isFile)
