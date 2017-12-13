@@ -6,7 +6,6 @@ object GBAColor {
 
     val fromCache = mutableMapOf<String, Color>()
     val toCache = mutableMapOf<Color, String>()
-    var cacheCalls = 0
 
     fun fromGBA(hex: String): Color {
         assert(hex.length == 4) { "Woah! This string isn't 4 characters wide!" }

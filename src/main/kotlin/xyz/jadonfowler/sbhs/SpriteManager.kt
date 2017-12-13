@@ -16,7 +16,6 @@ object SpriteManager {
     var SPRITES = HashMap<String, BufferedImage>()
 
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, paletteOffset: Int, spriteData: List<Pair<Int, Int>>) {
-        println("$name has ${spriteData.size} animations.")
         pane.addTab(name, null, createSpritePanel(name, readImage(name, spriteData), spriteData, paletteOffset), "Edit $name Sprite")
     }
 

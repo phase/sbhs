@@ -1,8 +1,10 @@
 package xyz.jadonfowler.sbhs
 
-import java.awt.*
-import java.io.*
-import java.net.URL
+import java.awt.Color
+import java.awt.Frame
+import java.awt.Image
+import java.io.File
+import java.io.RandomAccessFile
 import javax.swing.*
 
 /**
@@ -21,15 +23,27 @@ object SBHS {
     var frame: JFrame = JFrame("Sonic Battle Hack Suite $VERSION - By Phase")
     lateinit var spriteTabs: JTabbedPane
 
-    @JvmStatic fun main(args: Array<String>) {
+    fun getImage(name: String): Image = ImageIcon(SBHS::class.java.getResource("/$name")
+            ?: File("src/main/resources/$name").toURL()).image
+
+    val iconImage = getImage("icon.png")
+    val splashImage = getImage("splash.png")
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val timer = System.nanoTime()
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+
+        val splash = SplashScreen()
 
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         frame.setSize(WIDTH, HEIGHT)
         frame.isResizable = true
         frame.setLocationRelativeTo(null) // Center of screen
         frame.extendedState = Frame.MAXIMIZED_BOTH // Full screen
-        frame.iconImage = ImageIcon(SBHS::class.java.getResource("/icon.png") ?: File("src/resources/icon.png").toURL()).image
+        frame.iconImage = iconImage
+
+        splash.message = "Config"
 
         val config = File("config.txt")
         if (config.exists() && config.isFile)
@@ -37,7 +51,7 @@ object SBHS {
         else gameLocation = getFile()
         try {
             raf = RandomAccessFile(gameLocation, "rw")
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             System.exit(-1)
         }
@@ -47,8 +61,10 @@ object SBHS {
             // Palette Editor
             val paletteTabs = JTabbedPane()
             Character.values().forEach {
+                splash.message = "${it.name} Palette"
                 PaletteManager.addPaletteTab(paletteTabs, it.name, it.paletteOffset)
             }
+            splash.message = "Misc Palettes"
             PaletteManager.addPaletteTab(paletteTabs, "Fake_Emerl", 0x47AB78)
             PaletteManager.addPaletteTab(paletteTabs, "Dust_Cloud", 0xBF2058)
             PaletteManager.addPaletteTab(paletteTabs, "Sonic's_Mine", 0xBF20D8)
@@ -59,6 +75,7 @@ object SBHS {
         run {
             val textTabs = JTabbedPane()
             Character.values().filter(Character::hasStory).forEach {
+                splash.message = "Text Editor (${it.name})"
                 TextManager.addTextTab(textTabs, it.name, it.textOffsets.first, it.textOffsets.second)
             }
             mainTabs.addTab("Story", null, textTabs, "Story Editor")
@@ -69,8 +86,9 @@ object SBHS {
             // TODO: Add this back in
 //            SpriteManager.addSpriteTab(spriteTabs, "Ground Shadow", 0x47ABB8, 3)
             Character.values().forEach {
-                if (it != Character.Emerl)
-                    SpriteManager.addCharacterSpriteTab(spriteTabs, it.name, it.paletteOffset, it.spriteData)
+                if (it == Character.Emerl) return@forEach
+                splash.message = "${it.name} Sprites"
+                SpriteManager.addCharacterSpriteTab(spriteTabs, it.name, it.paletteOffset, it.spriteData)
             }
 
             val emerl = Character.Emerl
@@ -78,6 +96,7 @@ object SBHS {
             var characterByteOffset = 0
             Character.values().forEachIndexed { i: Int, char: Character ->
                 if (char == Character.Emerl || char == Character.Eggman) return@forEachIndexed
+                splash.message = "Emerl Sprites (${char.name})"
                 val spriteData = mutableListOf<Pair<Int, Int>>()
                 var o = 0
                 char.spriteFrames.forEach {
@@ -102,6 +121,7 @@ object SBHS {
             mainTabs.addTab("Sprites", null, spriteTabs, "Sprite Editor")
         }
         run {
+            splash.message = "About Page"
             // About Page
             val t = JTextPane()
             t.text = "Sonic Battle Hack Suite $VERSION was made by Phase.\n" +
@@ -111,8 +131,11 @@ object SBHS {
             mainTabs.addTab("About", null, t, "About Page")
         }
         frame.contentPane.add(mainTabs)
+        splash.message = "nothing"
+        splash.isVisible = false
         frame.isVisible = true
-        // frame.pack();
+        val time = System.nanoTime() - timer
+        println("Total time: ${time / 1000000000.0}s")
     }
 
     fun findFreeSpace(amount: Int): Int {
@@ -120,7 +143,7 @@ object SBHS {
         var a = 0
         try {
             // 00 00 00 01 10 -(read())-> 0 0 0 1 16
-            for (i in 0xF9EE30..1048559) {
+            for (i in 0xF9EE30..0x1048559) {
                 raf.seek(i.toLong())
                 val value = raf.read()
                 if (value != 0) {
