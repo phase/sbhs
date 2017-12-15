@@ -1,12 +1,13 @@
 package xyz.jadonfowler.sbhs
 
+import java.awt.Color
 import java.awt.Graphics
 import javax.swing.JWindow
 
 class SplashScreen : JWindow() {
 
     init {
-        setSize(300, 200)
+        setSize(490, 364)
         isVisible = true
     }
 
@@ -25,7 +26,8 @@ class SplashScreen : JWindow() {
         if (g == null) return
         g.drawImage(SBHS.splashImage, 0, 0, null)
         val textWidth = (width * (1.0 / 10)).toInt()
-        val textHeight = (height * (4.0 / 5)).toInt()
+        val textHeight = (height * (14.0 / 15)).toInt()
+        g.color = Color.white
         g.drawString("Loading $message...", textWidth, textHeight)
     }
 
