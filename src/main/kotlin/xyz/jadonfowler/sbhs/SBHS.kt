@@ -65,12 +65,10 @@ object SBHS {
                 splash.message = "${it.name} Palette"
                 PaletteManager.addPaletteTab(paletteTabs, it.name, it.paletteOffset)
             }
-            splash.message = "Misc Palettes"
-            PaletteManager.addPaletteTab(paletteTabs, "Fake_Emerl", 0x47AB78)
-            PaletteManager.addPaletteTab(paletteTabs, "Dust_Cloud", 0xBF2058)
-            PaletteManager.addPaletteTab(paletteTabs, "Sonic's_Mine", 0xBF20D8)
-            PaletteManager.addPaletteTab(paletteTabs, "Tail's_Blaster", 0xBF2098)
-            PaletteManager.addPaletteTab(paletteTabs, "Shield", 0xBF2078)
+            PaletteData.values().forEach {
+                splash.message = "${it.name} Palette"
+                PaletteManager.addPaletteTab(paletteTabs, it.name, it.paletteOffset)
+            }
             mainTabs.addTab("Palettes", null, paletteTabs, "Palette Editor")
         }
         run {

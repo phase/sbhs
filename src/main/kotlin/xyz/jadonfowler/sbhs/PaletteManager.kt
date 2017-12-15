@@ -91,7 +91,11 @@ object PaletteManager {
                         e1.printStackTrace()
                     }
 
-                    Character.valueOf(name).updateSpriteTab()
+                    try {
+                        Character.valueOf(name).updateSpriteTab()
+                    } catch (e: IllegalArgumentException) {
+                        // Ignoring because it's probably a PaletteData enum constant
+                    }
                 }
             })
             jp.add(jb)

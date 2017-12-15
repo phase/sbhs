@@ -4,6 +4,14 @@ import java.awt.ScrollPane
 import java.awt.image.BufferedImage
 import javax.swing.*
 
+enum class PaletteData(val paletteOffset: Int) {
+    Phi(0x47AB78),
+    Dust_Cloud(0xBF2058),
+    Sonic_Mine(0xBF20D8),
+    Tails_Blaster(0xBF2098),
+    Shield(0xBF2078)
+}
+
 enum class Character(
         val paletteOffset: Int,
         val textOffsets: Pair<Int, Int>,
