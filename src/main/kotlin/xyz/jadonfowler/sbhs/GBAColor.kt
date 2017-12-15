@@ -14,10 +14,11 @@ object GBAColor {
             return fromCache[hex]!!
         }
 
-        val bits = Integer.toBinaryString(Integer.parseInt(hex, 16)).padStart(16, '0')
-        val b = Math.min(255, Integer.parseInt(bits.substring(1..5), 2) * 8 * (24 / 15))
-        val g = Math.min(255, Integer.parseInt(bits.substring(6..10), 2) * 8 * (24 / 15))
-        val r = Math.min(255, Integer.parseInt(bits.substring(11..15), 2) * 8 * (24 / 15))
+        val n = Integer.parseInt(hex, 16)
+        val r = (n and ((1 shl 5) - 1)) * 8 * (24 / 15)
+        val g = ((n and (((1 shl 5) - 1) shl 5)) shr 5) * 8 * (24 / 15)
+        val b = ((n and (((1 shl 5) - 1) shl 10)) shr 10) * 8 * (24 / 15)
+
         val c = Color(r, g, b)
         fromCache[hex] = c
         return c
