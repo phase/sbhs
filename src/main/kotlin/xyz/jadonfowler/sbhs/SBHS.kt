@@ -6,6 +6,7 @@ import java.awt.Image
 import java.io.File
 import java.io.RandomAccessFile
 import javax.swing.*
+import javax.swing.filechooser.FileNameExtensionFilter
 
 /**
  * @author https://github.com/phase
@@ -46,9 +47,9 @@ object SBHS {
         splash.message = "Config"
 
         val config = File("config.txt")
-        if (config.exists() && config.isFile)
-            gameLocation = config.readText()
-        else gameLocation = getFile()
+        gameLocation = if (config.exists() && config.isFile) config.readText()
+        else getFile("GBA ROM", "gba").toString()
+
         try {
             raf = RandomAccessFile(gameLocation, "rw")
         } catch (e: Exception) {
@@ -164,10 +165,11 @@ object SBHS {
         return -1
     }
 
-    fun getFile(): String {
+    fun getFile(extensionDescription: String, extension: String): File {
         val fc = JFileChooser()
+        fc.fileFilter = FileNameExtensionFilter(extensionDescription, extension)
         return if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
-            fc.selectedFile.toString() else ""
+            fc.selectedFile else throw Exception("File not found?!")
     }
 
     fun getColorInput(previousColor: Color): Color {

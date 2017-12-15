@@ -3,11 +3,13 @@ package xyz.jadonfowler.sbhs
 import java.awt.Color
 import java.awt.ScrollPane
 import java.awt.image.BufferedImage
+import java.io.File
 import java.io.IOException
 import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.BoxLayout
+import javax.swing.filechooser.FileNameExtensionFilter
 
 object SpriteManager {
 
@@ -62,9 +64,12 @@ object SpriteManager {
             println("Saving Image: $name")
             val i = SPRITES[name]!!
             val fc = JFileChooser()
+            fc.fileFilter = FileNameExtensionFilter(".png", "png")
             if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
                 try {
-                    val o = fc.selectedFile
+                    var o = fc.selectedFile
+                    if (o.extension != "png")
+                        o = File(o.absolutePath + ".png")
                     ImageIO.write(i, "png", o)
                 } catch (x: IOException) {
                     x.printStackTrace()
@@ -75,19 +80,13 @@ object SpriteManager {
 
         upload.addActionListener {
             println("Uploading Image: $name")
-            val fc = JFileChooser()
-            if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    val i = ImageIO.read(fc.selectedFile)
-                    SPRITES[name] = i
+            val file = SBHS.getFile(".png", "png")
+            val i = ImageIO.read(file)
+            SPRITES[name] = i
 
-                    // Replace the sprite in the window
-                    scrollPane.remove(0)
-                    scrollPane.add(JLabel(ImageIcon(i)))
-                } catch (x: IOException) {
-                    x.printStackTrace()
-                }
-            }
+            // Replace the sprite in the window
+            scrollPane.remove(0)
+            scrollPane.add(JLabel(ImageIcon(i)))
         }
 
         jp.add(scrollPane)
@@ -192,7 +191,7 @@ object SpriteManager {
                             val iy = y + sy * 8 + size * (size + 2) * currentFrame
                             try {
                                 img.setRGB(ix, iy, c.rgb)
-                            } catch(e: Exception) {
+                            } catch (e: Exception) {
 //                                println("error @ ($ix, $iy) / (${img.width}, ${img.height})")
 //                                e.printStackTrace()
 //                                System.exit(1)
@@ -272,7 +271,7 @@ object SpriteManager {
                                         value = 0
                                     }
                                     value
-                                } catch(e: Exception) {
+                                } catch (e: Exception) {
                                     println("i($ix,$iy)/(${img.width},${img.height});")
                                     println("sx * 8 + x = ${sx * 8 + x}")
                                     println("sy * 8 + y = ${sy * 8 + y}")
