@@ -10,13 +10,9 @@ branches:
     - builds
 
 deploy:
-  provider: pages
+  provider: script
+  script: "./deploy.sh"
   skip_cleanup: true
-  file: "build/libs/sbhs.jar"
-  github_token: $GITHUB_TOKEN
-  name: Jadon Fowler
-  email: jadonflower@gmail.com
-  target_branch: builds
-  local_dir: build/libs/
   on:
     branch: master
+

@@ -1,5 +1,7 @@
 ![Sonic Battle Hacking](src/main/resources/sbhs_logo.png "Sonic Battle Hacking")
 
+[![Build Status](https://travis-ci.org/phase/sbhs.svg?branch=master)](https://travis-ci.org/phase/sbhs)
+
 This is a repository for hacking Sonic Battle,
 a game for the GameBoy Advanced released in 2004.
 
