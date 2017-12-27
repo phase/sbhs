@@ -41,7 +41,7 @@ object PaletteManager {
             //System.out.println(value + " " + f);
             // System.out.print(Integer.toHexString(value));
             if (f.length == 4) {
-                val colorParts = f.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+                val colorParts = listOf("${f[0]}${f[1]}", "${f[2]}${f[3]}")
                 f = colorParts[1] + colorParts[0]
                 colors[color++] = f
                 //System.out.println("@"+i + " " + color + " "+f);
@@ -70,13 +70,14 @@ object PaletteManager {
             jb.addActionListener { e: ActionEvent ->
                 val title = jb.text
                 val colorIndex = -1 + Integer.parseInt(title.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[2].replace(":", ""))
-                colors[colorIndex] = GBAColor.toGBA(SBHS.getColorInput(GBAColor.fromGBA(colors[colorIndex].orEmpty())))
+                val gc = GBAColor.toGBA(SBHS.getColorInput(GBAColor.fromGBA(colors[colorIndex].orEmpty())))
+                colors[colorIndex] = gc
                 PALETTES.remove(name)
                 PALETTES.put(name, colors.map { it.orEmpty() }.toTypedArray())
                 try {
-                    val colorParts = colors[colorIndex]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()
-                    val h1 = Integer.parseInt(colorParts?.get(0), 16)
-                    val h2 = Integer.parseInt(colorParts?.get(1), 16)
+                    val colorParts = listOf("${gc[0]}${gc[1]}", "${gc[2]}${gc[3]}")
+                    val h1 = Integer.parseInt(colorParts[0], 16)
+                    val h2 = Integer.parseInt(colorParts[1], 16)
                     // colors[colorIndex] = Integer.toHexString(h2) +
                     // Integer.toHexString(h1) + "";
                     val o = offset + colorIndex * 2.toLong()
@@ -105,12 +106,13 @@ object PaletteManager {
                     val img = ImageIO.read(fc.selectedFile)
                     for (x in 0..15) {
                         val c = Color(img.getRGB(x, 0))
-                        println("Upload-color: " + GBAColor.toGBA(c))
-                        colors[x] = GBAColor.toGBA(c)
+                        val gc = GBAColor.toGBA(c)
+                        println("Upload-color: $gc")
+                        colors[x] = gc
                         try {
-                            val colorParts = colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()
-                            val h1 = Integer.parseInt(colorParts?.get(0), 16)
-                            val h2 = Integer.parseInt(colorParts?.get(1), 16)
+                            val colorParts = listOf("${gc[0]}${gc[1]}", "${gc[2]}${gc[3]}")
+                            val h1 = Integer.parseInt(colorParts[0], 16)
+                            val h2 = Integer.parseInt(colorParts[1], 16)
                             val o = offset + x * 2.toLong()
                             SBHS.raf.seek(o)
                             SBHS.raf.write(h2)

@@ -131,9 +131,8 @@ object SpriteManager {
                         // Getting the values
                         SBHS.raf.seek(i.toLong())
                         val v = SBHS.raf.read()
-                        val value = ((if (v < 0x10) "0" else "") + Integer.toString(v, 16)).reversed()
-                        val v1 = Integer.parseInt(value[0].toString(), 16)
-                        val v2 = Integer.parseInt(value[1].toString(), 16)
+                        val v1 = v and 0b00001111
+                        val v2 = (v and 0b11110000) shr 4
 
                         // Setting the values
                         sections[currentSection].values[y - 1][x - 1] = v1
@@ -235,8 +234,9 @@ object SpriteManager {
         // Write new palette to rom
         (0..15).forEach {
             val c = GBAColor.toGBA(palette[it])
-            val h1 = Integer.parseInt(c.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty)[0], 16)
-            val h2 = Integer.parseInt(c.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty)[1], 16)
+            val colorParts = listOf("${c[0]}${c[1]}", "${c[2]}${c[3]}")
+            val h1 = Integer.parseInt(colorParts[0], 16)
+            val h2 = Integer.parseInt(colorParts[1], 16)
             SBHS.raf.seek((paletteOffset + it * 2).toLong())
             SBHS.raf.write(h2)
             SBHS.raf.seek((paletteOffset + it * 2 + 1).toLong())
@@ -247,20 +247,16 @@ object SpriteManager {
 
         spriteData.forEachIndexed { animationIndex, animationData ->
             val offset = animationData.first
-            println("0x" + Integer.toHexString(offset))
+            println("$name a$animationIndex 0x" + Integer.toHexString(offset))
             val frames = animationData.second
             var currentFrame = 0
             while (currentFrame < frames) {
                 val sections = Array(size * size, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
 
-                var sy = 0
-                while (sy < size) {
-                    var sx = 0
-                    while (sx < size) {
-                        var y = 0
-                        while (y < 8) {
-                            var x = 0
-                            while (x < 8) {
+                (0 until size).forEach { sy ->
+                    (0 until size).forEach { sx ->
+                        (0 until 8).forEach { y ->
+                            (0 until 8).forEach { x ->
                                 val ix = sx * 8 + x + (8 * size * animationIndex)
                                 val iy = currentFrame * size * 8 + sy * 8 + y
                                 sections[sx + sy * size].values[y][x] = try {
@@ -280,13 +276,9 @@ object SpriteManager {
                                     System.exit(-1)
                                     0
                                 }
-                                x++
                             }
-                            y++
                         }
-                        sx++
                     }
-                    sy++
                 }
 
                 /**
@@ -325,28 +317,26 @@ object SpriteManager {
                     return m
                 }
 
-                val valuesToWrite = mutableListOf<Int>()
-                sortedSections.forEachIndexed { s, spriteSection ->
-                    val values = spriteSection.values.f().map { Integer.toHexString(it) }
-                    val appendedValues = mutableListOf<Int>()
+                val valuesToWrite = mutableListOf<Byte>()
+                sortedSections.forEach {
+                    val values = it.values.f()
+                    val appendedValues = mutableListOf<Byte>()
 
                     var i = 0
                     while (i < values.size) {
                         val v1 = values[i]
                         val v2 = values[i + 1]
-                        val v = Integer.parseInt(v2 + v1, 16)
-                        appendedValues.add(v)
+                        val v = (v2 shl 4) or v1
+                        appendedValues.add(v.toByte())
                         i += 2
                     }
 
                     valuesToWrite.addAll(appendedValues)
                 }
 
-                valuesToWrite.forEachIndexed { i, value ->
-                    val o = offset + (currentFrame * size * size * 32) + i.toLong()
-                    SBHS.raf.seek(o)
-                    SBHS.raf.write(value)
-                }
+                val o = offset + (currentFrame * size * size * 32)
+                SBHS.raf.seek(o.toLong())
+                SBHS.raf.write(valuesToWrite.toByteArray())
 
                 currentFrame++
             }
