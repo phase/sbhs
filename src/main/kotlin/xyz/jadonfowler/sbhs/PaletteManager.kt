@@ -26,12 +26,10 @@ object PaletteManager {
     var PALETTES = HashMap<String, Array<String>>()
     var PALETTE_OFFSET = HashMap<String, Int>()
 
-    @Throws(Exception::class)
     fun addPaletteTab(pane: JTabbedPane, name: String, offset: Int) {
         pane.addTab(name, null, createPalettePanel(name, offset), "Edit $name Palette")
     }
 
-    @Throws(Exception::class)
     fun createPalettePanel(name: String, offset: Int): JPanel {
         PALETTE_OFFSET.put(name, offset)
         val colors = arrayOfNulls<String>(16)
@@ -43,8 +41,8 @@ object PaletteManager {
             //System.out.println(value + " " + f);
             // System.out.print(Integer.toHexString(value));
             if (f.length == 4) {
-                f = f.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()[1] +
-                        f.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()[0]
+                val colorParts = f.split("(?<=\\G.{2})".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+                f = colorParts[1] + colorParts[0]
                 colors[color++] = f
                 //System.out.println("@"+i + " " + color + " "+f);
                 f = SBHS.hex(value)
@@ -69,35 +67,33 @@ object PaletteManager {
             val jb = JButton("$name Color $i: " + if (PALETTE_INFO[name] == null)
                 "Something?"
             else if (PALETTE_INFO[name]!!.size < i) "Something?" else PALETTE_INFO[name]!![i - 1])
-            jb.addActionListener(object : ActionListener {
-                internal val character = name
-
-                override fun actionPerformed(e: ActionEvent) {
-                    val title = jb.text
-                    val i = -1 + Integer.parseInt(title.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[2].replace(":", ""))
-                    colors[i] = GBAColor.toGBA(SBHS.getColorInput(GBAColor.fromGBA(colors[i].orEmpty())))
-                    PALETTES.remove(character)
-                    PALETTES.put(character, colors.map { it.orEmpty() }.toTypedArray())
-                    try {
-                        val h1 = Integer.parseInt(colors[i]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()?.get(0), 16)
-                        val h2 = Integer.parseInt(colors[i]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()?.get(1), 16)
-                        // colors[i] = Integer.toHexString(h2) +
-                        // Integer.toHexString(h1) + "";
-                        SBHS.raf.seek((offset + i * 2).toLong())
-                        SBHS.raf.write(h2)
-                        SBHS.raf.seek((offset + i * 2 + 1).toLong())
-                        SBHS.raf.write(h1)
-                    } catch (e1: IOException) {
-                        e1.printStackTrace()
-                    }
-
-                    try {
-                        Character.valueOf(name).updateSpriteTab()
-                    } catch (e: IllegalArgumentException) {
-                        // Ignoring because it's probably a PaletteData enum constant
-                    }
+            jb.addActionListener { e: ActionEvent ->
+                val title = jb.text
+                val colorIndex = -1 + Integer.parseInt(title.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[2].replace(":", ""))
+                colors[colorIndex] = GBAColor.toGBA(SBHS.getColorInput(GBAColor.fromGBA(colors[colorIndex].orEmpty())))
+                PALETTES.remove(name)
+                PALETTES.put(name, colors.map { it.orEmpty() }.toTypedArray())
+                try {
+                    val colorParts = colors[colorIndex]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile({ it.isEmpty() })?.toTypedArray()
+                    val h1 = Integer.parseInt(colorParts?.get(0), 16)
+                    val h2 = Integer.parseInt(colorParts?.get(1), 16)
+                    // colors[colorIndex] = Integer.toHexString(h2) +
+                    // Integer.toHexString(h1) + "";
+                    val o = offset + colorIndex * 2.toLong()
+                    SBHS.raf.seek(o)
+                    SBHS.raf.write(h2)
+                    SBHS.raf.seek(o + 1)
+                    SBHS.raf.write(h1)
+                } catch (e1: IOException) {
+                    e1.printStackTrace()
                 }
-            })
+
+                try {
+                    Character.valueOf(name).updateSpriteTab()
+                } catch (e: IllegalArgumentException) {
+                    // Ignoring because it's probably a PaletteData enum constant
+                }
+            }
             jp.add(jb)
         }
         val upload = JButton("  Upload Palette")
@@ -112,11 +108,13 @@ object PaletteManager {
                         println("Upload-color: " + GBAColor.toGBA(c))
                         colors[x] = GBAColor.toGBA(c)
                         try {
-                            val h1 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()?.get(0), 16)
-                            val h2 = Integer.parseInt(colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()?.get(1), 16)
-                            SBHS.raf.seek((offset + x * 2).toLong())
+                            val colorParts = colors[x]?.split("(?<=\\G.{2})".toRegex())?.dropLastWhile(String::isEmpty)?.toTypedArray()
+                            val h1 = Integer.parseInt(colorParts?.get(0), 16)
+                            val h2 = Integer.parseInt(colorParts?.get(1), 16)
+                            val o = offset + x * 2.toLong()
+                            SBHS.raf.seek(o)
                             SBHS.raf.write(h2)
-                            SBHS.raf.seek((offset + x * 2 + 1).toLong())
+                            SBHS.raf.seek(o + 1)
                             SBHS.raf.write(h1)
                         } catch (e1: IOException) {
                             e1.printStackTrace()
@@ -139,17 +137,17 @@ object PaletteManager {
         save.addActionListener {
             println("Saving palette " + name)
             //Create Image
-            val i = BufferedImage(16, 1, BufferedImage.TYPE_INT_RGB)
+            val img = BufferedImage(16, 1, BufferedImage.TYPE_INT_RGB)
             for (x in 0..15) {
                 val c = GBAColor.fromGBA(PALETTES[name]!![x])
-                i.setRGB(x, 0, c.rgb)
+                img.setRGB(x, 0, c.rgb)
             }
             //Save Image
             val fc = JFileChooser()
             if (fc.showSaveDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
                 try {
                     val o = fc.selectedFile
-                    ImageIO.write(i, "png", o)
+                    ImageIO.write(img, "png", o)
                 } catch (x: IOException) {
                     x.printStackTrace()
                 }
