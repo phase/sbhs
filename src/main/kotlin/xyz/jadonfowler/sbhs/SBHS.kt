@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
  * @author https://github.com/phase
  */
 object SBHS {
-    val VERSION = "1.3"
+    val VERSION = BuildInfo.VERSION
     var gameLocation = ""
     var raf: RandomAccessFile = // Start with null file
             if (System.getProperty("os.name").toLowerCase().contains("win"))
@@ -125,7 +125,10 @@ object SBHS {
             val t = JTextPane()
             t.text = "Sonic Battle Hack Suite $VERSION was made by Phase.\n" +
                     "You can find the source at https://github.com/phase/sbhs\n" +
-                    "Current ROM open: $gameLocation"
+                    "Current ROM open: $gameLocation\n\n" +
+                    "Build Info:\n" +
+                    "JVM: ${BuildInfo.JVM_INFO}\n" +
+                    "Gradle: ${BuildInfo.GRADLE_INFO}\n"
             t.isEditable = false
             mainTabs.addTab("About", null, t, "About Page")
         }

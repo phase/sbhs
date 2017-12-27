@@ -1,19 +1,48 @@
+import org.gradle.internal.jvm.Jvm
+
 buildscript {
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.2.0'
 
     repositories {
         mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
     }
+}
+
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }
 
 apply plugin: "kotlin"
 apply plugin: "application"
+apply plugin: 'de.fuerstenau.buildconfig'
+apply plugin: 'idea'
 
 mainClassName = "xyz.jadonfowler.sbhs.SBHS"
+
+buildConfig {
+    appName = project.name
+    version = getGitHash()
+    clsName = "BuildInfo"
+    packageName = "xyz.jadonfowler.sbhs"
+    charset = 'UTF-8'
+
+    // fields of the config class
+    buildConfigField "String", "JVM_INFO", Jvm.current().toString()
+    buildConfigField "String", "GRADLE_INFO", GradleVersion.current().toString()
+}
 
 jar {
     manifest {
