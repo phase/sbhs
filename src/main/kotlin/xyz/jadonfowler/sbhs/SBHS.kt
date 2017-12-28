@@ -36,6 +36,8 @@ object SBHS {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
         val splash = SplashScreen()
+        splash.setLocationRelativeTo(null)
+        splash.isAlwaysOnTop = true
 
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         frame.setSize(WIDTH, HEIGHT)
