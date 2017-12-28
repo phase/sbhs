@@ -18,14 +18,25 @@ object SpriteManager {
     var SPRITES = HashMap<String, BufferedImage>()
 
     fun addCharacterSpriteTab(pane: JTabbedPane, name: String, paletteOffset: Int, spriteData: List<Pair<Int, Int>>) {
-        pane.addTab(name, null, createSpritePanel(name, readImage(name, spriteData), spriteData, paletteOffset), "Edit $name Sprite")
+        pane.addTab(name, null, createSpritePanel(name, readImage(name, spriteData, true), spriteData, paletteOffset, true), "Edit $name Sprite")
     }
 
     fun addSpriteTab(pane: JTabbedPane, name: String, offset: Int, amount: Int) {
-        pane.addTab(name, null, createSpritePanel(name, readImage(name, listOf(Pair(offset, amount))), listOf(Pair(offset, amount)), -1, 4), "Edit $name Sprite")
+        val data = listOf(Pair(offset, amount))
+        pane.addTab(name, null, createSpritePanel(name, readImage(name, data, false, 4), data, -1, false, 4), "Edit $name Sprite")
     }
 
-    fun createSpritePanel(name: String, initialImage: BufferedImage, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6): JPanel {
+    fun addSpritePageTab(pane: JTabbedPane, name: String, offset: Int, width: Int, height: Int, leftover: Int = 0) {
+        val data = mutableListOf<Pair<Int, Int>>()
+        (0 until width).forEach { w ->
+            // If we're on the last column, remove the leftover frames
+            val l = if (w == width - 1) leftover else 0
+            data.add(Pair(offset + (0x200 * w * height), height - l))
+        }
+        pane.addTab(name, null, createSpritePanel(name, readImage(name, data, false, 4), data, -1, false, 4), "Edit $name Sprite")
+    }
+
+    fun createSpritePanel(name: String, initialImage: BufferedImage, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, sortSprites: Boolean, size: Int = 6): JPanel {
         SPRITES[name] = initialImage
 
         val write = JButton("Write to ROM")
@@ -51,11 +62,11 @@ object SpriteManager {
         scrollPane.add(JLabel(ImageIcon(initialImage)))
 
         write.addActionListener {
-            writeImage(name, spriteData, paletteOffset)
+            writeImage(name, spriteData, paletteOffset, sortSprites)
             println("Done writing to $name.")
 
             // Replace the sprite in the window
-            val i = readImage(name, spriteData, size)
+            val i = readImage(name, spriteData, sortSprites, size)
             scrollPane.remove(0)
             scrollPane.add(JLabel(ImageIcon(i)))
         }
@@ -96,14 +107,14 @@ object SpriteManager {
     // The purples used for the background
     val PURPLE_1 = Color(255, 0, 250)
     val PURPLE_2 = Color(185, 0, 255)
-    val PURPLE_3 = Color(185, 0, 185)
+    val PURPLE_3 = Color(185, 0, 185) // no frame
 
     /**
      * Reads uncompressed sprite from ROM
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
-    fun readImage(name: String, spriteData: List<Pair<Int, Int>>, size: Int = 6): BufferedImage {
+    fun readImage(name: String, spriteData: List<Pair<Int, Int>>, sortSprites: Boolean, size: Int = 6): BufferedImage {
         val maxFrames = spriteData.map { it.second }.max() ?: 8 /*default frame count, though this should never be null*/
 
         val imgWidth = 8 * size * spriteData.size
@@ -119,7 +130,7 @@ object SpriteManager {
             val offset = animationData.first
             var currentFrame = 0
             while (currentFrame < animationData.second) {
-                val sections = Array(36, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
+                val sections = Array(size * size, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
 
                 run {
                     var currentSection = 0
@@ -127,7 +138,7 @@ object SpriteManager {
                     var y = 1
                     val frameOffset = offset + size * size * currentFrame * 32
                     var i = frameOffset
-                    while (i < frameOffset + 36 * 32) {
+                    while (i < frameOffset + size * size * 32) {
                         // Getting the values
                         SBHS.raf.seek(i.toLong())
                         val v = SBHS.raf.read()
@@ -162,14 +173,16 @@ object SpriteManager {
                 GHIJWX
                 KLMNYZ
                  */
-                val sortedSections = arrayOf(
-                        sections[0], sections[1], sections[2], sections[3], sections[24], sections[25],
-                        sections[4], sections[5], sections[6], sections[7], sections[26], sections[27],
-                        sections[8], sections[9], sections[10], sections[11], sections[28], sections[29],
-                        sections[12], sections[13], sections[14], sections[15], sections[30], sections[31],
-                        sections[16], sections[17], sections[18], sections[19], sections[32], sections[33],
-                        sections[20], sections[21], sections[22], sections[23], sections[34], sections[35]
-                )
+                val sortedSections = if (sortSprites) {
+                    arrayOf(
+                            sections[0], sections[1], sections[2], sections[3], sections[24], sections[25],
+                            sections[4], sections[5], sections[6], sections[7], sections[26], sections[27],
+                            sections[8], sections[9], sections[10], sections[11], sections[28], sections[29],
+                            sections[12], sections[13], sections[14], sections[15], sections[30], sections[31],
+                            sections[16], sections[17], sections[18], sections[19], sections[32], sections[33],
+                            sections[20], sections[21], sections[22], sections[23], sections[34], sections[35]
+                    )
+                } else sections
 
                 var sy = 0
                 sortedSections.forEachIndexed { i, spriteSection ->
@@ -187,7 +200,9 @@ object SpriteManager {
                             } else GBAColor.fromGBA(s)
 
                             val ix = x + (i % size) * 8 + (8 * size * animationIndex)
-                            val iy = y + sy * 8 + size * (size + 2) * currentFrame
+                            // TODO: Fix this gross hack
+                            val iy = y + sy * 8 + size * (size + (when (size) { 6 -> 2;4 -> 4; else -> 0
+                            })) * currentFrame
                             try {
                                 img.setRGB(ix, iy, c.rgb)
                             } catch (e: Exception) {
@@ -205,7 +220,7 @@ object SpriteManager {
         }
 
         // Write palette to upper left corner
-        PaletteManager.PALETTES[name]!!.forEachIndexed { i, s ->
+        PaletteManager.PALETTES[name]?.forEachIndexed { i, s ->
             val color = GBAColor.fromGBA(s)
             img.setRGB(i, 0, color.rgb)
         }
@@ -218,7 +233,7 @@ object SpriteManager {
      *
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
-    fun writeImage(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, size: Int = 6) {
+    fun writeImage(name: String, spriteData: List<Pair<Int, Int>>, paletteOffset: Int, sortSprites: Boolean, size: Int = 6) {
         val oldImage = SPRITES[name] ?: throw Exception("Null Image for $name")
 
         // Get the palette from the image
@@ -232,15 +247,17 @@ object SpriteManager {
         PaletteManager.PALETTES[name] = palette.map { GBAColor.toGBA(it) }.toTypedArray()
 
         // Write new palette to rom
-        (0..15).forEach {
-            val c = GBAColor.toGBA(palette[it])
-            val colorParts = listOf("${c[0]}${c[1]}", "${c[2]}${c[3]}")
-            val h1 = Integer.parseInt(colorParts[0], 16)
-            val h2 = Integer.parseInt(colorParts[1], 16)
-            SBHS.raf.seek((paletteOffset + it * 2).toLong())
-            SBHS.raf.write(h2)
-            SBHS.raf.seek((paletteOffset + it * 2 + 1).toLong())
-            SBHS.raf.write(h1)
+        if (paletteOffset > 0) {
+            (0..15).forEach {
+                val c = GBAColor.toGBA(palette[it])
+                val colorParts = listOf("${c[0]}${c[1]}", "${c[2]}${c[3]}")
+                val h1 = Integer.parseInt(colorParts[0], 16)
+                val h2 = Integer.parseInt(colorParts[1], 16)
+                SBHS.raf.seek((paletteOffset + it * 2).toLong())
+                SBHS.raf.write(h2)
+                SBHS.raf.seek((paletteOffset + it * 2 + 1).toLong())
+                SBHS.raf.write(h1)
+            }
         }
 
         val img = convertImageToGBAColors(oldImage, palette, newPalette)
@@ -299,17 +316,19 @@ object SpriteManager {
                 16, 17, 22, 23,
                 28, 29, 34, 35
                  */
-                val sortedSections = arrayOf(
-                        sections[0], sections[1], sections[2], sections[3],
-                        sections[6], sections[7], sections[8], sections[9],
-                        sections[12], sections[13], sections[14], sections[15],
-                        sections[18], sections[19], sections[20], sections[21],
-                        sections[24], sections[25], sections[26], sections[27],
-                        sections[30], sections[31], sections[32], sections[33],
-                        sections[4], sections[5], sections[10], sections[11],
-                        sections[16], sections[17], sections[22], sections[23],
-                        sections[28], sections[29], sections[34], sections[35]
-                )
+                val sortedSections = if (sortSprites) {
+                    arrayOf(
+                            sections[0], sections[1], sections[2], sections[3],
+                            sections[6], sections[7], sections[8], sections[9],
+                            sections[12], sections[13], sections[14], sections[15],
+                            sections[18], sections[19], sections[20], sections[21],
+                            sections[24], sections[25], sections[26], sections[27],
+                            sections[30], sections[31], sections[32], sections[33],
+                            sections[4], sections[5], sections[10], sections[11],
+                            sections[16], sections[17], sections[22], sections[23],
+                            sections[28], sections[29], sections[34], sections[35]
+                    )
+                } else sections
 
                 fun <T> Array<Array<T>>.f(): List<T> {
                     val m = mutableListOf<T>()
@@ -337,6 +356,10 @@ object SpriteManager {
                 val o = offset + (currentFrame * size * size * 32)
                 SBHS.raf.seek(o.toLong())
                 SBHS.raf.write(valuesToWrite.toByteArray())
+
+                if (name == "Emerl/Chaos") {
+                    println(Integer.toHexString(o + valuesToWrite.size))
+                }
 
                 currentFrame++
             }

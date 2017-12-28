@@ -112,14 +112,23 @@ object SBHS {
                 characterByteOffset += frames * 0x480
 
                 // Add the image to the tabs
-                val image = SpriteManager.readImage("Emerl", spriteData)
+                val image = SpriteManager.readImage("Emerl", spriteData, true)
                 emerlTabs.addTab(char.name, null,
-                        SpriteManager.createSpritePanel("Emerl/${char.name}", image, spriteData, emerl.paletteOffset),
+                        SpriteManager.createSpritePanel("Emerl/${char.name}", image, spriteData, emerl.paletteOffset, true),
                         "Edit Emerl/${char.name} Sprite")
 
             }
             spriteTabs.addTab("Emerl", null, emerlTabs, "Emerl")
             mainTabs.addTab("Sprites", null, spriteTabs, "Sprite Editor")
+        }
+        run {
+            val effectTabs = JTabbedPane()
+            PaletteManager.PALETTES["Effect #1"] = PaletteManager.PALETTES["Sonic"]!!
+            PaletteManager.PALETTES["Effect #2"] = PaletteManager.PALETTES["Sonic"]!!
+            // o B1800
+            SpriteManager.addSpritePageTab(effectTabs, "Effect #1", 0xa8f038, 89, 16, 4)
+            SpriteManager.addSpritePageTab(effectTabs, "Effect #2", 0xa8f038 + 0xB1820, 89, 16, 4)
+            mainTabs.addTab("Effects", null, effectTabs, "Effect Editor")
         }
         run {
             splash.message = "About Page"

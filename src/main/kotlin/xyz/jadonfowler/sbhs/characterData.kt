@@ -46,7 +46,7 @@ enum class Character(
 
     fun hasStory(): Boolean = textOffsets.first != -1
 
-    fun readImage(): BufferedImage = SpriteManager.readImage(name, spriteData)
+    fun readImage(): BufferedImage = SpriteManager.readImage(name, spriteData, true)
 
     fun updateSpriteTab() {
         val img = readImage()
