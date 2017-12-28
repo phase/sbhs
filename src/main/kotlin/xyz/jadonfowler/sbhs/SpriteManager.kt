@@ -62,7 +62,7 @@ object SpriteManager {
         scrollPane.add(JLabel(ImageIcon(initialImage)))
 
         write.addActionListener {
-            writeImage(name, spriteData, paletteOffset, sortSprites)
+            writeImage(name, spriteData, paletteOffset, sortSprites, size)
             println("Done writing to $name.")
 
             // Replace the sprite in the window
