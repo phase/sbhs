@@ -1,4 +1,4 @@
-package xyz.jadonfowler.sbhs
+package io.jadon.sbhs
 
 import java.awt.Color
 import java.awt.Frame
@@ -21,7 +21,7 @@ object SBHS {
     val WIDTH = 1280
     val HEIGHT = 840
 
-    var frame: JFrame = JFrame("Sonic Battle Hack Suite $VERSION - By Phase")
+    var frame: JFrame = JFrame("Sonic Battle Hack Suite ${VERSION} - By Phase")
     lateinit var spriteTabs: JTabbedPane
 
     fun getImage(name: String): Image = ImageIcon(SBHS::class.java.getResource("/$name")
@@ -134,9 +134,9 @@ object SBHS {
             splash.message = "About Page"
             // About Page
             val t = JTextPane()
-            t.text = "Sonic Battle Hack Suite $VERSION was made by Phase.\n" +
+            t.text = "Sonic Battle Hack Suite ${VERSION} was made by Phase.\n" +
                     "You can find the source at https://github.com/phase/sbhs\n" +
-                    "Current ROM open: $gameLocation\n\n" +
+                    "Current ROM open: ${gameLocation}\n\n" +
                     "Build Info:\n" +
                     "JVM: ${BuildInfo.JVM_INFO}\n" +
                     "Gradle: ${BuildInfo.GRADLE_INFO}\n"

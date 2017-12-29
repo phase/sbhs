@@ -1,4 +1,4 @@
-package xyz.jadonfowler.sbhs.test;
+package io.jadon.sbhs.test;
 
 import javax.swing.*;
 import java.awt.*;

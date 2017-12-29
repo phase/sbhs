@@ -1,4 +1,4 @@
-package xyz.jadonfowler.sbhs
+package io.jadon.sbhs
 
 import java.awt.*
 import java.awt.event.*

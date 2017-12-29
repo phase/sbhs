@@ -1,4 +1,4 @@
-package xyz.jadonfowler.sbhs.test;
+package io.jadon.sbhs.test;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

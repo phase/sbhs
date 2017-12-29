@@ -30,13 +30,13 @@ apply plugin: "application"
 apply plugin: 'de.fuerstenau.buildconfig'
 apply plugin: 'idea'
 
-mainClassName = "xyz.jadonfowler.sbhs.SBHS"
+mainClassName = "io.jadon.sbhs.SBHS"
 
 buildConfig {
     appName = project.name
     version = getGitHash()
     clsName = "BuildInfo"
-    packageName = "xyz.jadonfowler.sbhs"
+    packageName = "io.jadon.sbhs"
     charset = 'UTF-8'
 
     // fields of the config class
@@ -46,7 +46,7 @@ buildConfig {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'xyz.jadonfowler.sbhs.SBHS'
+        attributes 'Main-Class': 'io.jadon.sbhs.SBHS'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
