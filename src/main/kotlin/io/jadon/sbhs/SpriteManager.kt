@@ -133,12 +133,17 @@ object SpriteManager {
                 val sections = Array(size * size, { SpriteSection(Array(8, { Array(8, { -1 }) })) })
 
                 run {
+                    // variables used for sorting bytes
                     var currentSection = 0
                     var x = 1
                     var y = 1
+
+                    // variables used for retrieving bytes
                     val frameOffset = offset + size * size * currentFrame * 32
                     var i = frameOffset
-                    while (i < frameOffset + size * size * 32) {
+                    val frameSize = frameOffset + size * size * 32
+
+                    while (i < frameSize) {
                         // Getting the values
                         SBHS.raf.seek(i.toLong())
                         val v = SBHS.raf.read()

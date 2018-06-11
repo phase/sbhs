@@ -125,8 +125,8 @@ object SBHS {
             PaletteManager.PALETTES["Effect #1"] = PaletteManager.PALETTES["Sonic"]!!
             PaletteManager.PALETTES["Effect #2"] = PaletteManager.PALETTES["Sonic"]!!
             // o B1800
-            SpriteManager.addSpritePageTab(effectTabs, "Effect #1", 0xa8f038, 89, 16, 4)
-            SpriteManager.addSpritePageTab(effectTabs, "Effect #2", 0xa8f038 + 0xB1820, 89, 16, 4)
+            SpriteManager.addSpritePageTab(effectTabs, "Effects", 0xa8f038, 89, 16, 4)
+            SpriteManager.addSpritePageTab(effectTabs, "Emerl Effects", 0xa8f038 + 0xB1820, 89, 16, 4)
             mainTabs.addTab("Effects", null, effectTabs, "Effect Editor")
         }
         run {
