@@ -51,6 +51,7 @@ img {
     height: 150px;
     background-position: center;
     background-size: cover;
+    background-color: aqua;
 }
 
 .showcase p {
@@ -64,6 +65,7 @@ p, h2, h3 {
     font-size: 1.1em;
     font-weight: bold;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+    -webkit-font-smoothing: antialiased;
 }
 
 h2 {
@@ -90,13 +92,13 @@ a {
 }
 
 a:link {
-    color: deepskyblue;
+    color: #ff5252;
 }
 
 a:visited {
-    color: deepskyblue;
+    color: #ff5252;
 }
 
 a:hover {
-    color: aqua;
+    color: #ff7b7b;
 }
