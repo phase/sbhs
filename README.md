@@ -1,6 +1,8 @@
 ![Sonic Battle Hacking](src/main/resources/sbhs_logo.png "Sonic Battle Hacking")
 
+[![Github All Releases](https://img.shields.io/github/downloads/phase/sbhs/total.svg)](https://github.com/phase/sbhs/releases)
 [![Build Status](https://travis-ci.org/phase/sbhs.svg?branch=master)](https://travis-ci.org/phase/sbhs)
+[![codebeat badge](https://codebeat.co/badges/f737c03c-4aa3-40c4-bbfa-8f83a154e28f)](https://codebeat.co/projects/github-com-phase-sbhs-master)
 
 This is a repository for hacking Sonic Battle,
 a game for the GameBoy Advanced released in 2004.
