@@ -49,7 +49,14 @@ object SBHS {
 
         val config = File("config.txt")
         gameLocation = if (config.exists() && config.isFile) config.readText()
-        else getFile("GBA ROM", "gba").toString()
+        else {
+            val file: File? = getFile("GBA ROM", "gba")
+            if (file == null) {
+                System.err.println("File not found!")
+                System.exit(-1)
+            }
+            file.toString()
+        }
 
         try {
             raf = RandomAccessFile(gameLocation, "rw")
@@ -176,11 +183,11 @@ object SBHS {
         return -1
     }
 
-    fun getFile(extensionDescription: String, extension: String): File {
+    fun getFile(extensionDescription: String, extension: String): File? {
         val fc = JFileChooser()
         fc.fileFilter = FileNameExtensionFilter(extensionDescription, extension)
         return if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
-            fc.selectedFile else throw Exception("File not found?!")
+            fc.selectedFile else null
     }
 
     fun getColorInput(previousColor: Color): Color {
