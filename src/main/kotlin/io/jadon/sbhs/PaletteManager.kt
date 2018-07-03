@@ -99,7 +99,7 @@ object PaletteManager {
         }
         val upload = JButton("  Upload Palette")
         upload.addActionListener {
-            println("Uploading palette " + name)
+            println("Uploading palette $name")
             val fc = JFileChooser()
             if (fc.showOpenDialog(SBHS.frame) == JFileChooser.APPROVE_OPTION) {
                 try {
@@ -137,7 +137,7 @@ object PaletteManager {
         jp.add(upload)
         val save = JButton("  Save Palette")
         save.addActionListener {
-            println("Saving palette " + name)
+            println("Saving palette $name")
             //Create Image
             val img = BufferedImage(16, 1, BufferedImage.TYPE_INT_RGB)
             for (x in 0..15) {
