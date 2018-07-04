@@ -129,8 +129,8 @@ object SBHS {
         }
         run {
             val effectTabs = JTabbedPane()
-            PaletteManager.PALETTES["Effect #1"] = PaletteManager.PALETTES["Sonic"]!!
-            PaletteManager.PALETTES["Effect #2"] = PaletteManager.PALETTES["Sonic"]!!
+            PaletteManager.PALETTES["Effects"] = PaletteManager.PALETTES["Sonic"]!!
+            PaletteManager.PALETTES["Emerl Effects"] = PaletteManager.PALETTES["Sonic"]!!
             // o B1800
             SpriteManager.addSpritePageTab(effectTabs, "Effects", 0xa8f038, 89, 16, 4)
             SpriteManager.addSpritePageTab(effectTabs, "Emerl Effects", 0xa8f038 + 0xB1820, 89, 16, 4)
