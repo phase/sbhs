@@ -115,7 +115,8 @@ object SpriteManager {
      * @param spriteData List of animation data, which contain the offset and the frame count
      */
     fun readImage(name: String, spriteData: List<Pair<Int, Int>>, sortSprites: Boolean, size: Int = 6): BufferedImage {
-        val maxFrames = spriteData.map { it.second }.max() ?: 8 /*default frame count, though this should never be null*/
+        val maxFrames = spriteData.map { it.second }.max()
+                ?: 8 /*default frame count, though this should never be null*/
 
         val imgWidth = 8 * size * spriteData.size
         val imgHeight = 8 * size * maxFrames
@@ -243,8 +244,7 @@ object SpriteManager {
 
         // Get the palette from the image
         val palette = (0..15).map { Color(oldImage.getRGB(it, 0)) }
-        // Convert the palette to GBA colors and back
-        val newPalette = palette.map { GBAColor.fromGBA(GBAColor.toGBA(it)) }
+
         // Remove the palette so we can write the image
         (1..15).forEach { oldImage.setRGB(it, 0, palette[0].rgb) }
 
@@ -265,11 +265,12 @@ object SpriteManager {
             }
         }
 
-        val img = convertImageToGBAColors(oldImage, palette, newPalette)
+//        val img = convertImageToGBAColors(oldImage, palette, newPalette)
+        val img = oldImage
 
         spriteData.forEachIndexed { animationIndex, animationData ->
             val offset = animationData.first
-            println("$name a$animationIndex 0x" + Integer.toHexString(offset))
+//            println("$name a$animationIndex 0x" + Integer.toHexString(offset))
             val frames = animationData.second
             var currentFrame = 0
             while (currentFrame < frames) {
@@ -283,9 +284,8 @@ object SpriteManager {
                                 val iy = currentFrame * size * 8 + sy * 8 + y
                                 sections[sx + sy * size].values[y][x] = try {
                                     val color = Color(img.getRGB(ix, iy))
-                                    var value = newPalette.indexOf(color)
+                                    var value = palette.indexOf(color)
                                     if (value < 0) {
-//                                        System.err.println("Can't find color $color in the palette.")
                                         value = 0
                                     }
                                     value
@@ -362,10 +362,6 @@ object SpriteManager {
                 SBHS.raf.seek(o.toLong())
                 SBHS.raf.write(valuesToWrite.toByteArray())
 
-                if (name == "Emerl/Chaos") {
-                    println(Integer.toHexString(o + valuesToWrite.size))
-                }
-
                 currentFrame++
             }
         }
@@ -399,40 +395,6 @@ object SpriteManager {
         return img
     }
 
-    fun BufferedImage.copy(): BufferedImage {
-        val cm = this.colorModel
-        val raster = this.copyData(this.raster.createCompatibleWritableRaster())
-        return BufferedImage(cm, raster, cm.isAlphaPremultiplied, null)
-    }
-
-    fun BufferedImage.changeColors(l: (Color) -> Color) {
-        var y = 0
-        while (y < this.height) {
-            var x = 0
-            while (x < this.width) {
-                this.setRGB(x, y, l(Color(this.getRGB(x, y))).rgb)
-                x++
-            }
-            y++
-        }
-    }
-
-    fun convertImageToGBAColors(img: BufferedImage, palette: List<Color>, newPalette: List<Color>): BufferedImage {
-        // Copy the image so we don't modify the new one
-        val newImage = img.copy()
-        println("iw${newImage.width}h${newImage.height};")
-
-        // Replace the colors that need to be replaced
-        newImage.changeColors {
-            if (palette.contains(it)) {
-                val index = palette.indexOf(it)
-                newPalette[index]
-            } else it
-        }
-
-        return newImage
-    }
-
     fun printPalette(s: Array<String>) {
         print("[")
         for (i in s.indices) {
@@ -443,15 +405,4 @@ object SpriteManager {
         println("]")
     }
 
-    fun getIndexFromPalette(name: String, color: Color): Int {
-        val p = ArrayList(Arrays.asList(*PaletteManager.PALETTES[name]!!))
-        for (s in p) {
-            val i = p.indexOf(s)
-            val pc = GBAColor.fromGBA(s)
-            if (pc == color) return i
-        }
-        print("Error finding color $color ")
-        printPalette(PaletteManager.PALETTES[name]!!)
-        return 0
-    }
 }
